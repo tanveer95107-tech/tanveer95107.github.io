@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tanu Store | Premium Clothing for Men, Women & Kids</title>
-  <meta name="description" content="Tanu Store — discover premium fashion for men, women and kids. Shop new arrivals, best sellers and special offers.">
-  <meta name="keywords" content="Tanu Store, clothing, fashion, men clothing, women clothing, kids clothing, Pakistan">
+  <title>Tanu Store | Premium Fashion for Men, Women & Kids</title>
+  <meta name="description" content="Tanu Store — Discover premium branded fashion for men, women and kids. Shop new arrivals, best sellers and exclusive offers. Free shipping across Pakistan.">
+  <meta name="keywords" content="Tanu Store, branded clothing, fashion, men clothing, women clothing, kids clothing, Pakistan, online shopping">
   <meta name="author" content="Tanu Store">
   <meta property="og:title" content="Tanu Store | Premium Fashion">
-  <meta property="og:description" content="Premium clothing for Men, Women & Kids.">
+  <meta property="og:description" content="Premium branded clothing for Men, Women & Kids.">
   <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0a0a0a">
 
   <style>
     /* ===== RESET & ROOT ===== */
@@ -25,22 +26,27 @@
       --dark: #141414;
       --gold: #c8a96b;
       --gold-light: #e0c88a;
-      --cream: #f8f6f1;
+      --gold-dark: #a8894a;
+      --cream: #faf8f4;
       --white: #ffffff;
       --gray: #777777;
-      --light-gray: #f0ede8;
-      --border: #e7e4de;
+      --light-gray: #f5f3ef;
+      --border: #eae7e1;
       --shadow: 0 10px 40px rgba(0,0,0,0.08);
-      --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
+      --shadow-hover: 0 25px 70px rgba(0,0,0,0.18);
+      --shadow-gold: 0 10px 40px rgba(200,169,107,0.35);
       --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --font-display: 'Georgia', 'Times New Roman', serif;
+      --font-body: 'Segoe UI', Arial, Helvetica, sans-serif;
     }
 
     body {
-      font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+      font-family: var(--font-body);
       color: var(--black);
       background: var(--white);
       line-height: 1.7;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     a {
@@ -58,11 +64,34 @@
       display: block;
     }
 
+    ::selection {
+      background: var(--gold);
+      color: white;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--light-gray);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gold-dark);
+    }
+
     /* ===== SCROLL ANIMATIONS ===== */
     .reveal {
       opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: translateY(50px);
+      transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .reveal.active {
@@ -70,17 +99,40 @@
       transform: translateY(0);
     }
 
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .reveal-left.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .reveal-right.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     /* ===== TOP BAR ===== */
     .topbar {
       background: linear-gradient(90deg, var(--black), #1a1a1a, var(--black));
       color: white;
       text-align: center;
-      padding: 10px 15px;
-      font-size: 12px;
-      letter-spacing: 1.5px;
+      padding: 11px 15px;
+      font-size: 11px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
       position: relative;
       overflow: hidden;
+      font-weight: 500;
     }
 
     .topbar::before {
@@ -90,8 +142,8 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(200,169,107,0.3), transparent);
-      animation: shine 4s infinite;
+      background: linear-gradient(90deg, transparent, rgba(200,169,107,0.4), transparent);
+      animation: shine 5s infinite;
     }
 
     @keyframes shine {
@@ -104,16 +156,21 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(255,255,255,0.98);
-      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       border-bottom: 1px solid var(--border);
       transition: var(--transition);
+    }
+
+    header.scrolled {
+      box-shadow: 0 5px 30px rgba(0,0,0,0.08);
     }
 
     .nav {
       max-width: 1300px;
       margin: auto;
-      height: 80px;
+      height: 82px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -122,11 +179,13 @@
     }
 
     .logo {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: 3px;
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 4px;
       white-space: nowrap;
       position: relative;
+      transition: var(--transition);
     }
 
     .logo span {
@@ -140,8 +199,8 @@
       left: 0;
       width: 0;
       height: 2px;
-      background: var(--gold);
-      transition: width 0.4s ease;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transition: width 0.5s ease;
     }
 
     .logo:hover::after {
@@ -151,18 +210,19 @@
     .menu {
       display: flex;
       align-items: center;
-      gap: 30px;
+      gap: 32px;
       list-style: none;
     }
 
     .menu a {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       position: relative;
       padding: 5px 0;
       transition: var(--transition);
+      color: #333;
     }
 
     .menu a::after {
@@ -186,23 +246,25 @@
 
     .nav-actions {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
     }
 
     .icon-btn {
       border: 0;
       background: transparent;
-      font-size: 22px;
-      padding: 8px;
+      font-size: 20px;
+      padding: 10px;
       position: relative;
       transition: var(--transition);
       border-radius: 50%;
+      color: var(--black);
     }
 
     .icon-btn:hover {
       background: var(--light-gray);
-      transform: scale(1.1);
+      transform: scale(1.08);
+      color: var(--gold);
     }
 
     .cart-count {
@@ -212,26 +274,28 @@
       background: var(--gold);
       color: white;
       font-size: 10px;
-      width: 18px;
-      height: 18px;
+      width: 19px;
+      height: 19px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       font-weight: 700;
       animation: pulse 2s infinite;
+      border: 2px solid white;
     }
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
+      50% { transform: scale(1.12); }
     }
 
     .hamburger {
       display: none;
       border: 0;
       background: none;
-      font-size: 28px;
+      font-size: 26px;
       transition: var(--transition);
+      color: var(--black);
     }
 
     .hamburger:hover {
@@ -244,7 +308,7 @@
       display: flex;
       align-items: center;
       background:
-        linear-gradient(135deg, rgba(0,0,0,0.80), rgba(0,0,0,0.30)),
+        linear-gradient(135deg, rgba(0,0,0,0.82), rgba(0,0,0,0.35)),
         url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=2000&q=90")
         center/cover no-repeat fixed;
       color: white;
@@ -258,8 +322,8 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 150px;
-      background: linear-gradient(transparent, rgba(255,255,255,0.05));
+      height: 180px;
+      background: linear-gradient(transparent, rgba(255,255,255,0.03));
     }
 
     .hero-content {
@@ -273,34 +337,47 @@
 
     .hero-small {
       text-transform: uppercase;
-      letter-spacing: 5px;
-      font-size: 13px;
-      margin-bottom: 20px;
+      letter-spacing: 6px;
+      font-size: 12px;
+      margin-bottom: 25px;
       color: var(--gold-light);
       font-weight: 600;
       animation: fadeInUp 1s ease;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .hero-small::before {
+      content: '';
+      width: 50px;
+      height: 2px;
+      background: var(--gold);
     }
 
     .hero h1 {
-      font-size: clamp(48px, 8vw, 95px);
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 100px);
       line-height: 1.0;
-      max-width: 800px;
-      margin-bottom: 25px;
+      max-width: 850px;
+      margin-bottom: 28px;
       animation: fadeInUp 1s ease 0.2s both;
-      text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.4);
+      font-weight: 700;
     }
 
     .hero h1 span {
       color: var(--gold);
+      font-style: italic;
     }
 
     .hero p {
-      max-width: 570px;
+      max-width: 580px;
       font-size: 18px;
       color: #ddd;
-      margin-bottom: 40px;
+      margin-bottom: 42px;
       animation: fadeInUp 1s ease 0.4s both;
-      line-height: 1.8;
+      line-height: 1.9;
     }
 
     .hero-buttons {
@@ -313,7 +390,7 @@
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translateY(50px);
       }
       to {
         opacity: 1;
@@ -326,18 +403,19 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       border: 2px solid var(--black);
       background: var(--black);
       color: white;
-      padding: 15px 32px;
-      font-size: 13px;
+      padding: 16px 36px;
+      font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .btn::before {
@@ -347,8 +425,8 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s ease;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.6s ease;
     }
 
     .btn:hover::before {
@@ -359,7 +437,7 @@
       background: var(--gold);
       border-color: var(--gold);
       transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(200,169,107,0.4);
+      box-shadow: var(--shadow-gold);
     }
 
     .btn-light {
@@ -383,34 +461,37 @@
     .btn-outline:hover {
       background: white;
       color: black;
+      border-color: white;
     }
 
     /* ===== SECTION ===== */
     .section {
       max-width: 1300px;
       margin: auto;
-      padding: 100px 30px;
+      padding: 110px 30px;
     }
 
     .section-heading {
       text-align: center;
-      margin-bottom: 55px;
+      margin-bottom: 60px;
     }
 
     .section-heading span {
       color: var(--gold);
       text-transform: uppercase;
-      font-size: 12px;
-      letter-spacing: 4px;
+      font-size: 11px;
+      letter-spacing: 5px;
       font-weight: 700;
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .section-heading h2 {
-      font-size: clamp(32px, 5vw, 48px);
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 50px);
       margin: 8px 0;
       line-height: 1.2;
+      font-weight: 700;
     }
 
     .section-heading p {
@@ -428,7 +509,7 @@
     }
 
     .category {
-      min-height: 450px;
+      min-height: 480px;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -444,44 +525,46 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(transparent 30%, rgba(0,0,0,0.85));
+      background: linear-gradient(transparent 25%, rgba(0,0,0,0.88));
       transition: var(--transition);
     }
 
     .category:hover {
-      transform: translateY(-8px);
+      transform: translateY(-10px);
       box-shadow: var(--shadow-hover);
     }
 
     .category:hover::after {
-      background: linear-gradient(transparent 20%, rgba(0,0,0,0.9));
+      background: linear-gradient(transparent 15%, rgba(0,0,0,0.92));
     }
 
     .category-content {
       position: relative;
       z-index: 2;
       color: white;
-      padding: 35px;
+      padding: 38px;
       width: 100%;
       transform: translateY(0);
       transition: var(--transition);
     }
 
     .category:hover .category-content {
-      transform: translateY(-8px);
+      transform: translateY(-10px);
     }
 
     .category-content h3 {
-      font-size: 34px;
-      margin-bottom: 10px;
+      font-family: var(--font-display);
+      font-size: 38px;
+      margin-bottom: 12px;
       font-weight: 700;
+      letter-spacing: 1px;
     }
 
     .category-content a {
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       font-weight: 600;
       color: var(--gold);
       display: inline-flex;
@@ -491,7 +574,7 @@
     }
 
     .category-content a:hover {
-      gap: 14px;
+      gap: 16px;
       color: white;
     }
 
@@ -524,7 +607,7 @@
     }
 
     .product:hover {
-      transform: translateY(-8px);
+      transform: translateY(-10px);
       box-shadow: var(--shadow-hover);
       border-color: var(--gold);
     }
@@ -540,11 +623,11 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .product:hover .product-image img {
-      transform: scale(1.08);
+      transform: scale(1.1);
     }
 
     .badge {
@@ -553,12 +636,13 @@
       left: 15px;
       background: var(--gold);
       color: white;
-      padding: 6px 12px;
+      padding: 7px 14px;
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       font-weight: 700;
       z-index: 2;
+      border-radius: 2px;
     }
 
     .badge.sale-badge {
@@ -571,18 +655,19 @@
       right: 15px;
       background: white;
       border: none;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
       z-index: 2;
       transition: var(--transition);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 15px rgba(0,0,0,0.12);
       opacity: 0;
       transform: translateX(10px);
+      color: #999;
     }
 
     .product:hover .wishlist-btn {
@@ -593,31 +678,35 @@
     .wishlist-btn:hover {
       background: var(--gold);
       color: white;
+      transform: scale(1.1);
     }
 
     .wishlist-btn.active {
       background: #d32f2f;
       color: white;
+      opacity: 1;
+      transform: translateX(0);
     }
 
     .product-info {
-      padding: 20px;
+      padding: 22px;
     }
 
     .product-category {
       font-size: 10px;
       color: var(--gray);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.8px;
       font-weight: 600;
     }
 
     .product-info h3 {
       font-size: 16px;
-      margin: 6px 0 10px;
+      margin: 8px 0 12px;
       font-weight: 600;
       line-height: 1.4;
       min-height: 44px;
+      font-family: var(--font-display);
     }
 
     .price {
@@ -640,23 +729,24 @@
       font-weight: 700;
       margin-left: 8px;
       background: #ffebee;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 2px;
     }
 
     .product-btn {
       width: 100%;
-      margin-top: 15px;
-      padding: 12px;
+      margin-top: 16px;
+      padding: 13px;
       border: 2px solid var(--black);
       background: white;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .product-btn:hover {
@@ -676,34 +766,48 @@
       position: absolute;
       top: -50%;
       right: -10%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(200,169,107,0.15), transparent);
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(200,169,107,0.18), transparent);
+      border-radius: 50%;
+    }
+
+    .promo::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -5%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(200,169,107,0.12), transparent);
       border-radius: 50%;
     }
 
     .promo-inner {
       max-width: 1300px;
       margin: auto;
-      padding: 100px 30px;
+      padding: 110px 30px;
       text-align: center;
       position: relative;
       z-index: 2;
     }
 
     .promo h2 {
-      font-size: clamp(32px, 6vw, 58px);
-      margin-bottom: 15px;
+      font-family: var(--font-display);
+      font-size: clamp(32px, 6vw, 60px);
+      margin-bottom: 18px;
       line-height: 1.1;
+      font-weight: 700;
     }
 
     .promo h2 span {
       color: var(--gold);
+      font-style: italic;
     }
 
     .promo p {
       color: var(--gray);
-      margin-bottom: 30px;
+      margin-bottom: 35px;
       font-size: 17px;
     }
 
@@ -716,37 +820,41 @@
 
     .feature {
       text-align: center;
-      padding: 35px 25px;
+      padding: 40px 25px;
       transition: var(--transition);
       border-radius: 4px;
+      border: 1px solid transparent;
     }
 
     .feature:hover {
       background: var(--cream);
-      transform: translateY(-5px);
+      transform: translateY(-6px);
+      border-color: var(--border);
     }
 
     .feature-icon {
-      font-size: 38px;
-      margin-bottom: 18px;
+      font-size: 40px;
+      margin-bottom: 20px;
       display: inline-block;
       transition: var(--transition);
+      color: var(--gold);
     }
 
     .feature:hover .feature-icon {
-      transform: scale(1.2) rotate(5deg);
+      transform: scale(1.2) rotate(8deg);
     }
 
     .feature h3 {
       font-size: 18px;
       margin-bottom: 10px;
       font-weight: 700;
+      font-family: var(--font-display);
     }
 
     .feature p {
       color: var(--gray);
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
     /* ===== ABOUT ===== */
@@ -764,15 +872,15 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a96b' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.5;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8a96b' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.6;
     }
 
     .about-inner {
       max-width: 1000px;
       margin: auto;
       text-align: center;
-      padding: 110px 30px;
+      padding: 120px 30px;
       position: relative;
       z-index: 2;
     }
@@ -780,15 +888,17 @@
     .about-inner span {
       color: var(--gold);
       text-transform: uppercase;
-      letter-spacing: 4px;
-      font-size: 12px;
+      letter-spacing: 5px;
+      font-size: 11px;
       font-weight: 700;
     }
 
     .about-inner h2 {
-      font-size: clamp(32px, 5vw, 48px);
-      margin: 15px 0 25px;
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 50px);
+      margin: 18px 0 28px;
       line-height: 1.2;
+      font-weight: 700;
     }
 
     .about-inner p {
@@ -796,7 +906,7 @@
       max-width: 800px;
       margin: auto;
       font-size: 17px;
-      line-height: 1.9;
+      line-height: 2;
     }
 
     /* ===== FAQ ===== */
@@ -807,12 +917,12 @@
 
     details {
       border-bottom: 1px solid var(--border);
-      padding: 22px 0;
+      padding: 24px 0;
       transition: var(--transition);
     }
 
     details:hover {
-      padding-left: 10px;
+      padding-left: 12px;
     }
 
     summary {
@@ -824,6 +934,7 @@
       justify-content: space-between;
       align-items: center;
       transition: var(--transition);
+      font-family: var(--font-display);
     }
 
     summary::-webkit-details-marker {
@@ -832,10 +943,11 @@
 
     summary::after {
       content: '+';
-      font-size: 24px;
+      font-size: 26px;
       color: var(--gold);
       transition: transform 0.3s ease;
       font-weight: 300;
+      line-height: 1;
     }
 
     details[open] summary::after {
@@ -849,8 +961,8 @@
 
     details p {
       color: var(--gray);
-      padding-top: 15px;
-      line-height: 1.8;
+      padding-top: 18px;
+      line-height: 1.9;
       animation: fadeIn 0.3s ease;
     }
 
@@ -868,7 +980,7 @@
 
     .contact-card {
       background: var(--cream);
-      padding: 45px;
+      padding: 50px;
       border-radius: 4px;
       transition: var(--transition);
       position: relative;
@@ -884,7 +996,7 @@
       height: 100%;
       background: var(--gold);
       transform: scaleY(0);
-      transition: transform 0.4s ease;
+      transition: transform 0.5s ease;
       transform-origin: bottom;
     }
 
@@ -893,19 +1005,20 @@
     }
 
     .contact-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
       box-shadow: var(--shadow);
     }
 
     .contact-card h3 {
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       font-size: 26px;
+      font-family: var(--font-display);
     }
 
     .contact-card p {
       color: var(--gray);
-      margin-bottom: 25px;
-      line-height: 1.8;
+      margin-bottom: 28px;
+      line-height: 1.9;
     }
 
     .social-links {
@@ -916,78 +1029,106 @@
 
     .social {
       border: 2px solid var(--black);
-      padding: 12px 22px;
-      font-size: 12px;
+      padding: 14px 26px;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      cursor: pointer;
     }
 
     .social:hover {
       background: var(--black);
       color: white;
-      transform: translateY(-3px);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
     /* ===== NEWSLETTER ===== */
     .newsletter {
       background: var(--black);
       color: white;
-      padding: 80px 30px;
+      padding: 90px 30px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(200,169,107,0.08), transparent);
+      border-radius: 50%;
     }
 
     .newsletter-inner {
       max-width: 600px;
       margin: auto;
+      position: relative;
+      z-index: 2;
     }
 
     .newsletter h3 {
-      font-size: 32px;
-      margin-bottom: 12px;
+      font-family: var(--font-display);
+      font-size: 34px;
+      margin-bottom: 14px;
+      font-weight: 700;
     }
 
     .newsletter p {
       color: #aaa;
-      margin-bottom: 30px;
+      margin-bottom: 32px;
     }
 
     .newsletter-form {
       display: flex;
       gap: 10px;
-      max-width: 500px;
+      max-width: 520px;
       margin: auto;
     }
 
     .newsletter-form input {
       flex: 1;
-      padding: 16px 20px;
+      padding: 17px 22px;
       border: 2px solid #333;
       background: #1a1a1a;
       color: white;
       font-size: 14px;
       outline: none;
       transition: var(--transition);
+      border-radius: 2px;
     }
 
     .newsletter-form input:focus {
       border-color: var(--gold);
+      background: #222;
+    }
+
+    .newsletter-form input::placeholder {
+      color: #666;
     }
 
     .newsletter-form button {
-      padding: 16px 28px;
+      padding: 17px 30px;
       background: var(--gold);
       border: 2px solid var(--gold);
       color: white;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 12px;
+      letter-spacing: 1.5px;
+      font-size: 11px;
       transition: var(--transition);
+      border-radius: 2px;
+      cursor: pointer;
     }
 
     .newsletter-form button:hover {
@@ -1004,17 +1145,18 @@
     .footer-inner {
       max-width: 1300px;
       margin: auto;
-      padding: 70px 30px 30px;
+      padding: 80px 30px 40px;
       display: grid;
       grid-template-columns: 1.5fr 1fr 1fr 1fr;
       gap: 50px;
     }
 
     .footer-logo {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: 3px;
-      margin-bottom: 18px;
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
     }
 
     .footer-logo span {
@@ -1024,20 +1166,22 @@
     footer p {
       color: #888;
       font-size: 14px;
-      line-height: 1.8;
+      line-height: 1.9;
     }
 
     footer h4 {
-      margin-bottom: 20px;
-      font-size: 16px;
+      margin-bottom: 22px;
+      font-size: 14px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      color: white;
+      font-weight: 700;
     }
 
     .footer-links {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .footer-links a {
@@ -1049,15 +1193,16 @@
 
     .footer-links a:hover {
       color: var(--gold);
-      transform: translateX(5px);
+      transform: translateX(6px);
     }
 
     .footer-bottom {
       border-top: 1px solid #1a1a1a;
       text-align: center;
-      padding: 25px;
+      padding: 28px;
       color: #666;
       font-size: 12px;
+      letter-spacing: 1px;
     }
 
     /* ===== SEARCH OVERLAY ===== */
@@ -1066,7 +1211,7 @@
       position: fixed;
       inset: 0;
       z-index: 3000;
-      background: rgba(0,0,0,0.92);
+      background: rgba(0,0,0,0.94);
       padding: 120px 20px;
       animation: fadeIn 0.3s ease;
     }
@@ -1075,7 +1220,7 @@
       max-width: 750px;
       margin: auto;
       background: white;
-      padding: 40px;
+      padding: 45px;
       border-radius: 4px;
       animation: slideDown 0.4s ease;
     }
@@ -1083,7 +1228,7 @@
     @keyframes slideDown {
       from {
         opacity: 0;
-        transform: translateY(-30px);
+        transform: translateY(-40px);
       }
       to {
         opacity: 1;
@@ -1091,13 +1236,20 @@
       }
     }
 
+    .search-box h2 {
+      font-family: var(--font-display);
+      margin-bottom: 25px;
+      font-size: 28px;
+    }
+
     .search-box input {
       width: 100%;
-      padding: 18px;
+      padding: 20px;
       border: 2px solid var(--border);
       font-size: 16px;
       outline: none;
       transition: var(--transition);
+      border-radius: 2px;
     }
 
     .search-box input:focus {
@@ -1108,10 +1260,12 @@
       float: right;
       border: 0;
       background: none;
-      font-size: 28px;
+      font-size: 30px;
       margin-bottom: 15px;
       transition: var(--transition);
       line-height: 1;
+      color: #333;
+      cursor: pointer;
     }
 
     .close:hover {
@@ -1123,14 +1277,14 @@
     .cart-panel {
       position: fixed;
       top: 0;
-      right: -450px;
-      width: min(450px, 100%);
+      right: -480px;
+      width: min(480px, 100%);
       height: 100vh;
       background: white;
       z-index: 2500;
-      box-shadow: -20px 0 60px rgba(0,0,0,0.2);
-      transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      padding: 30px;
+      box-shadow: -25px 0 70px rgba(0,0,0,0.25);
+      transition: right 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      padding: 35px;
       overflow-y: auto;
     }
 
@@ -1143,21 +1297,26 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid var(--border);
-      padding-bottom: 20px;
-      margin-bottom: 20px;
+      padding-bottom: 22px;
+      margin-bottom: 22px;
+    }
+
+    .cart-head h2 {
+      font-family: var(--font-display);
+      font-size: 26px;
     }
 
     .cart-item {
       display: flex;
-      gap: 15px;
-      padding: 15px 0;
+      gap: 18px;
+      padding: 18px 0;
       border-bottom: 1px solid var(--border);
       animation: fadeIn 0.3s ease;
     }
 
     .cart-item img {
-      width: 80px;
-      height: 95px;
+      width: 85px;
+      height: 100px;
       object-fit: cover;
       border-radius: 4px;
     }
@@ -1169,12 +1328,14 @@
     .cart-item-info strong {
       font-size: 14px;
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
+      line-height: 1.4;
     }
 
     .cart-item-info .item-price {
       font-weight: 700;
       color: var(--gold);
+      font-size: 15px;
     }
 
     .remove {
@@ -1182,10 +1343,11 @@
       background: none;
       color: #999;
       font-size: 12px;
-      margin-top: 5px;
+      margin-top: 8px;
       transition: var(--transition);
       padding: 0;
       text-decoration: underline;
+      cursor: pointer;
     }
 
     .remove:hover {
@@ -1197,21 +1359,26 @@
       display: flex;
       justify-content: space-between;
       font-weight: 800;
-      font-size: 22px;
-      padding-top: 20px;
+      font-size: 24px;
+      padding-top: 22px;
       border-top: 2px solid var(--black);
+      font-family: var(--font-display);
     }
 
     .empty-cart {
       text-align: center;
       color: var(--gray);
-      padding: 60px 0;
+      padding: 70px 0;
     }
 
     .empty-cart .empty-icon {
-      font-size: 50px;
-      margin-bottom: 15px;
-      opacity: 0.5;
+      font-size: 55px;
+      margin-bottom: 18px;
+      opacity: 0.4;
+    }
+
+    .empty-cart p {
+      font-size: 16px;
     }
 
     /* ===== PRODUCT MODAL ===== */
@@ -1220,14 +1387,14 @@
       position: fixed;
       inset: 0;
       z-index: 2200;
-      background: rgba(0,0,0,0.80);
+      background: rgba(0,0,0,0.82);
       padding: 30px 15px;
       overflow-y: auto;
       animation: fadeIn 0.3s ease;
     }
 
     .modal-content {
-      max-width: 900px;
+      max-width: 950px;
       margin: 30px auto;
       background: white;
       display: grid;
@@ -1241,7 +1408,7 @@
     @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translateY(50px);
       }
       to {
         opacity: 1;
@@ -1250,7 +1417,7 @@
     }
 
     .modal-image {
-      min-height: 550px;
+      min-height: 580px;
       background: #f5f5f5;
     }
 
@@ -1261,41 +1428,43 @@
     }
 
     .modal-info {
-      padding: 50px 40px;
+      padding: 55px 45px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
     .modal-info h2 {
-      font-size: 32px;
-      margin: 10px 0;
+      font-family: var(--font-display);
+      font-size: 34px;
+      margin: 12px 0;
       line-height: 1.2;
     }
 
     .modal-price {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 800;
-      margin: 18px 0;
+      margin: 20px 0;
       color: var(--gold);
     }
 
-    .modal-info p {
+    .modal-info > p {
       color: var(--gray);
-      margin-bottom: 25px;
-      line-height: 1.8;
+      margin-bottom: 28px;
+      line-height: 1.9;
     }
 
     .size-select {
       width: 100%;
-      padding: 15px;
-      margin-bottom: 18px;
+      padding: 16px;
+      margin-bottom: 20px;
       border: 2px solid var(--border);
       background: white;
       font-size: 14px;
       outline: none;
       transition: var(--transition);
       cursor: pointer;
+      border-radius: 2px;
     }
 
     .size-select:focus {
@@ -1304,20 +1473,22 @@
 
     .modal-close {
       position: absolute;
-      top: 15px;
-      right: 15px;
+      top: 18px;
+      right: 18px;
       z-index: 2;
       border: 0;
       background: white;
-      font-size: 28px;
-      width: 42px;
-      height: 42px;
+      font-size: 26px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       transition: var(--transition);
-      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 18px rgba(0,0,0,0.12);
       line-height: 1;
+      cursor: pointer;
+      color: #333;
     }
 
     .modal-close:hover {
@@ -1329,10 +1500,10 @@
     /* ===== SCROLL TO TOP ===== */
     .scroll-top {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
+      bottom: 35px;
+      right: 35px;
+      width: 52px;
+      height: 52px;
       background: var(--gold);
       color: white;
       border: none;
@@ -1345,7 +1516,7 @@
       opacity: 0;
       visibility: hidden;
       transition: var(--transition);
-      box-shadow: 0 5px 25px rgba(200,169,107,0.5);
+      box-shadow: 0 6px 30px rgba(200,169,107,0.5);
     }
 
     .scroll-top.visible {
@@ -1355,25 +1526,26 @@
 
     .scroll-top:hover {
       background: var(--black);
-      transform: translateY(-5px);
+      transform: translateY(-6px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     }
 
     /* ===== TOAST NOTIFICATION ===== */
     .toast {
       position: fixed;
-      bottom: 30px;
+      bottom: 35px;
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
+      transform: translateX(-50%) translateY(120px);
       background: var(--black);
       color: white;
-      padding: 15px 30px;
+      padding: 16px 34px;
       border-radius: 4px;
       font-size: 14px;
       font-weight: 600;
       z-index: 4000;
       opacity: 0;
-      transition: all 0.4s ease;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      transition: all 0.45s ease;
+      box-shadow: 0 12px 50px rgba(0,0,0,0.35);
       border-left: 4px solid var(--gold);
     }
 
@@ -1390,22 +1562,25 @@
       .features {
         grid-template-columns: repeat(2, 1fr);
       }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media (max-width: 950px) {
       .menu {
         display: none;
         position: absolute;
-        top: 80px;
+        top: 82px;
         left: 0;
         right: 0;
         background: white;
-        padding: 25px 30px;
+        padding: 28px 30px;
         flex-direction: column;
         align-items: flex-start;
         border-bottom: 1px solid var(--border);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        gap: 20px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+        gap: 22px;
       }
 
       .menu.show {
@@ -1417,12 +1592,12 @@
         display: block;
       }
 
-      .footer-inner {
-        grid-template-columns: 1fr 1fr;
-      }
-
       .hero {
         background-attachment: scroll;
+      }
+
+      .hero h1 {
+        font-size: 52px;
       }
     }
 
@@ -1437,7 +1612,7 @@
       }
 
       .category {
-        min-height: 350px;
+        min-height: 380px;
       }
 
       .contact-grid {
@@ -1449,27 +1624,39 @@
       }
 
       .modal-image {
-        min-height: 350px;
+        min-height: 380px;
       }
 
       .modal-info {
-        padding: 30px 25px;
+        padding: 35px 28px;
       }
 
       .newsletter-form {
         flex-direction: column;
       }
+
+      .section {
+        padding: 80px 20px;
+      }
+
+      .hero h1 {
+        font-size: 44px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
     }
 
     @media (max-width: 650px) {
       .nav {
-        height: 70px;
-        padding: 0 15px;
+        height: 72px;
+        padding: 0 18px;
       }
 
       .logo {
-        font-size: 22px;
-        letter-spacing: 2px;
+        font-size: 24px;
+        letter-spacing: 3px;
       }
 
       .section {
@@ -1477,11 +1664,16 @@
       }
 
       .hero-content {
-        padding: 60px 15px;
+        padding: 60px 18px;
       }
 
       .hero h1 {
-        font-size: 42px;
+        font-size: 38px;
+      }
+
+      .hero-small {
+        font-size: 10px;
+        letter-spacing: 4px;
       }
 
       .products {
@@ -1490,12 +1682,12 @@
       }
 
       .product-info {
-        padding: 14px;
+        padding: 16px;
       }
 
       .product-info h3 {
         font-size: 13px;
-        min-height: 36px;
+        min-height: 38px;
       }
 
       .price {
@@ -1504,54 +1696,58 @@
 
       .features {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 18px;
       }
 
       .footer-inner {
         grid-template-columns: 1fr;
-        gap: 35px;
-        padding: 50px 20px 25px;
+        gap: 38px;
+        padding: 55px 22px 28px;
       }
 
       .btn {
-        padding: 13px 24px;
-        font-size: 12px;
+        padding: 14px 26px;
+        font-size: 11px;
       }
 
       .section-heading h2 {
-        font-size: 30px;
+        font-size: 28px;
       }
 
       .search-box {
-        padding: 25px;
+        padding: 28px;
       }
 
       .cart-panel {
-        padding: 20px;
+        padding: 22px;
       }
 
       .contact-card {
-        padding: 30px 25px;
+        padding: 35px 28px;
       }
 
       .about-inner {
-        padding: 80px 20px;
+        padding: 85px 22px;
       }
 
       .promo-inner {
-        padding: 70px 20px;
+        padding: 80px 22px;
       }
 
       .newsletter {
-        padding: 60px 20px;
+        padding: 65px 22px;
       }
 
       .scroll-top {
-        bottom: 20px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
+        bottom: 22px;
+        right: 22px;
+        width: 46px;
+        height: 46px;
         font-size: 18px;
+      }
+
+      .footer-logo {
+        font-size: 26px;
       }
     }
 
@@ -1566,12 +1762,16 @@
       }
 
       .product-btn {
-        font-size: 10px;
-        padding: 10px 5px;
+        font-size: 9px;
+        padding: 11px 5px;
       }
 
       .hero h1 {
-        font-size: 34px;
+        font-size: 32px;
+      }
+
+      .section-heading h2 {
+        font-size: 24px;
       }
     }
   </style>
@@ -1585,7 +1785,7 @@
   </div>
 
   <!-- HEADER -->
-  <header>
+  <header id="header">
     <nav class="nav">
       <a href="#home" class="logo">TANU<span>STORE</span></a>
 
@@ -1614,11 +1814,12 @@
   <main id="home">
     <section class="hero">
       <div class="hero-content">
-        <div class="hero-small">✦ Tanu Store • Premium Collection 2025 ✦</div>
+        <div class="hero-small">Tanu Store • Premium Collection 2025</div>
         <h1>Style That<br><span>Speaks</span> For You.</h1>
         <p>
-          Discover premium fashion for Men, Women and Kids — 
-          carefully curated for everyday elegance and special moments.
+          Discover premium branded fashion for Men, Women and Kids — 
+          carefully curated for everyday elegance and special moments. 
+          Experience luxury at affordable prices.
         </p>
         <div class="hero-buttons">
           <a href="#new" class="btn btn-light">Shop Collection</a>
@@ -1632,7 +1833,7 @@
       <div class="section-heading">
         <span>Explore</span>
         <h2>Shop By Category</h2>
-        <p>Find your perfect style from our premium collections.</p>
+        <p>Find your perfect style from our premium branded collections.</p>
       </div>
 
       <div class="categories">
@@ -1662,7 +1863,7 @@
       <div class="section-heading">
         <span>Fresh Styles</span>
         <h2>New Arrivals</h2>
-        <p>Explore our newest premium pieces and update your wardrobe.</p>
+        <p>Explore our newest premium branded pieces and update your wardrobe.</p>
       </div>
 
       <div class="products" id="newProductsGrid">
@@ -1675,7 +1876,7 @@
       <div class="section-heading">
         <span>Men's Collection</span>
         <h2>Men's Fashion</h2>
-        <p>Modern premium essentials designed for everyday confidence.</p>
+        <p>Modern premium branded essentials designed for everyday confidence.</p>
       </div>
       <div class="products" id="menGrid"></div>
     </section>
@@ -1685,7 +1886,7 @@
       <div class="section-heading">
         <span>Women's Collection</span>
         <h2>Women's Fashion</h2>
-        <p>Elegant premium styles for every occasion.</p>
+        <p>Elegant premium branded styles for every occasion.</p>
       </div>
       <div class="products" id="womenGrid"></div>
     </section>
@@ -1695,7 +1896,7 @@
       <div class="section-heading">
         <span>Kids Collection</span>
         <h2>Kids Fashion</h2>
-        <p>Comfortable and stylish premium looks for little trendsetters.</p>
+        <p>Comfortable and stylish premium branded looks for little trendsetters.</p>
       </div>
       <div class="products" id="kidsGrid"></div>
     </section>
@@ -1706,7 +1907,7 @@
         <div class="section-heading">
           <span>Limited Time Offer</span>
           <h2>Special <span>Sale</span> Up To 50% Off</h2>
-          <p>Discover selected premium styles at unbeatable prices.</p>
+          <p>Discover selected premium branded styles at unbeatable prices.</p>
         </div>
         <a href="#new" class="btn">Shop Sale Now</a>
       </div>
@@ -1722,23 +1923,23 @@
       <div class="features">
         <div class="feature">
           <div class="feature-icon">✦</div>
-          <h3>Premium Style</h3>
-          <p>Carefully selected fashion designed for modern lifestyles.</p>
+          <h3>Premium Brands</h3>
+          <p>Carefully selected branded fashion designed for modern lifestyles.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">✓</div>
           <h3>Quality First</h3>
-          <p>We focus on quality, comfort and timeless style.</p>
+          <p>We focus on quality, comfort and timeless branded style.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">♡</div>
           <h3>Customer Care</h3>
-          <p>Your shopping experience is our top priority.</p>
+          <p>Your shopping experience is our top priority. We're always here to help.</p>
         </div>
         <div class="feature">
           <div class="feature-icon">↗</div>
-          <h3>Latest Trends</h3>
-          <p>Discover fresh styles and collections throughout the year.</p>
+          <h3>Fast Delivery</h3>
+          <p>Quick and reliable delivery across Pakistan with tracking updates.</p>
         </div>
       </div>
     </section>
@@ -1749,11 +1950,12 @@
         <span>About Tanu Store</span>
         <h2>Fashion Made For Everyone.</h2>
         <p>
-          Tanu Store brings together premium fashion for Men, Women and Kids 
+          Tanu Store brings together premium branded fashion for Men, Women and Kids 
           in one modern destination. Our goal is simple: make it easy for you 
           to discover clothing that looks great, feels comfortable and fits 
           your personal style. From everyday essentials to statement pieces, 
-          we've got something for everyone.
+          we've got something for everyone. Shop with confidence and experience 
+          the premium difference.
         </p>
       </div>
     </section>
@@ -1768,27 +1970,27 @@
       <div class="faq">
         <details>
           <summary>How can I order a product?</summary>
-          <p>Select a product and add it to your cart. You can then contact Tanu Store through WhatsApp to confirm your order and delivery details.</p>
+          <p>Select a product and add it to your cart. You can then contact Tanu Store through WhatsApp to confirm your order and delivery details. We'll guide you through the entire process.</p>
         </details>
         <details>
           <summary>Do you have Men, Women and Kids clothing?</summary>
-          <p>Yes! Tanu Store offers premium collections for Men, Women and Kids. Browse our categories to explore all options.</p>
+          <p>Yes! Tanu Store offers premium branded collections for Men, Women and Kids. Browse our categories to explore all options. We have over 75+ products across all categories.</p>
         </details>
         <details>
           <summary>How can I contact Tanu Store?</summary>
-          <p>You can contact us through WhatsApp or Instagram using the links provided in the contact section below.</p>
+          <p>You can contact us through WhatsApp at +92 333 9917323 or Instagram @tanver_aly using the links provided in the contact section below. We respond quickly!</p>
         </details>
         <details>
           <summary>Can I ask about sizes before ordering?</summary>
-          <p>Absolutely! Contact us through WhatsApp and ask about available sizes, measurements, and product details before placing your order.</p>
+          <p>Absolutely! Contact us through WhatsApp and ask about available sizes, measurements, and product details before placing your order. We're happy to help you find the perfect fit.</p>
         </details>
         <details>
           <summary>Do you offer delivery across Pakistan?</summary>
-          <p>Yes, we deliver across Pakistan. Delivery charges may apply based on your location. Contact us on WhatsApp for more details.</p>
+          <p>Yes, we deliver across Pakistan. Delivery charges may apply based on your location. Free shipping on orders above Rs. 5,000. Contact us on WhatsApp for more details.</p>
         </details>
         <details>
           <summary>What is your return policy?</summary>
-          <p>If you receive a damaged or incorrect product, please contact us within 24 hours of delivery. We'll resolve the issue promptly.</p>
+          <p>If you receive a damaged or incorrect product, please contact us within 24 hours of delivery. We'll resolve the issue promptly with a replacement or refund.</p>
         </details>
       </div>
     </section>
@@ -1804,7 +2006,7 @@
       <div class="contact-grid">
         <div class="contact-card">
           <h3>📱 Social Media</h3>
-          <p>Follow Tanu Store and discover our latest premium styles.</p>
+          <p>Follow Tanu Store and discover our latest premium branded styles.</p>
           <div class="social-links">
             <a class="social" href="https://www.instagram.com/tanver_aly?stkn=MXUzdjcyZjFxMnVsOA%3D%3D&utm_source=qr" target="_blank" rel="noopener">
               📷 Instagram
@@ -1829,7 +2031,7 @@
     <section class="newsletter reveal">
       <div class="newsletter-inner">
         <h3>Stay Updated</h3>
-        <p>Subscribe to get updates on new arrivals and exclusive offers.</p>
+        <p>Subscribe to get updates on new arrivals, exclusive offers and sale alerts.</p>
         <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
           <input type="email" placeholder="Enter your email address" required>
           <button type="submit">Subscribe</button>
@@ -1843,7 +2045,7 @@
     <div class="footer-inner">
       <div>
         <div class="footer-logo">TANU<span>STORE</span></div>
-        <p>Premium fashion for Men, Women and Kids. Discover your style with Tanu Store — where quality meets elegance.</p>
+        <p>Premium branded fashion for Men, Women and Kids. Discover your style with Tanu Store — where quality meets elegance and luxury meets affordability.</p>
       </div>
 
       <div>
@@ -1889,9 +2091,9 @@
   <div class="search-overlay" id="searchOverlay">
     <div class="search-box">
       <button class="close" onclick="closeSearch()">×</button>
-      <h2 style="margin-bottom:20px;">Search Tanu Store</h2>
+      <h2>Search Tanu Store</h2>
       <input type="search" id="searchInput" placeholder="Search shirts, dresses, kids clothing..." oninput="searchProducts()">
-      <div id="searchResults" style="margin-top:25px; max-height:400px; overflow-y:auto;"></div>
+      <div id="searchResults" style="margin-top:28px; max-height:400px; overflow-y:auto;"></div>
     </div>
   </div>
 
@@ -1906,7 +2108,7 @@
       <span>Total</span>
       <span id="cartTotal">Rs. 0</span>
     </div>
-    <a id="checkoutButton" class="btn" style="width:100%; margin-top:25px;" href="https://wa.me/923339917323" target="_blank" rel="noopener">
+    <a id="checkoutButton" class="btn" style="width:100%; margin-top:28px;" href="https://wa.me/923339917323" target="_blank" rel="noopener">
       💬 Order On WhatsApp
     </a>
   </aside>
@@ -1922,7 +2124,7 @@
         <div class="product-category" id="modalCategory"></div>
         <h2 id="modalTitle"></h2>
         <div class="modal-price" id="modalPrice"></div>
-        <p>Premium selected style from the Tanu Store collection. Choose your size and add this item to your shopping cart.</p>
+        <p>Premium branded style from the Tanu Store collection. Choose your size and add this item to your shopping cart.</p>
         <select class="size-select" id="modalSize">
           <option value="">Select Size</option>
           <option>XS</option>
@@ -1931,6 +2133,7 @@
           <option>L</option>
           <option>XL</option>
           <option>XXL</option>
+          <option>3XL</option>
         </select>
         <button class="btn" style="width:100%;" onclick="addModalProduct()">
           🛒 Add To Cart
@@ -2025,52 +2228,52 @@
         "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=800&q=85",
         "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=85",
         "https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?auto=format&fit=crop&w=800&q=85",
+        "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&w=800&q=85",
         "https://images.unsplash.com/photo-1615397587228-4a4e5c5c5c5c?auto=format&fit=crop&w=800&q=85",
         "https://images.unsplash.com/photo-1622290319146-7b8c3d3c5c5c?auto=format&fit=crop&w=800&q=85",
-        "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&w=800&q=85",
       ]
     };
 
     const PRODUCTS = {
       men: [
-        { name: "Classic Black Formal Shirt", price: 3499, oldPrice: 4999, brand: "Premium" },
-        { name: "Modern Slim Fit Shirt", price: 2999, oldPrice: 3999, brand: "Executive" },
+        { name: "Premium Formal Dress Shirt", price: 3499, oldPrice: 4999, brand: "Executive" },
+        { name: "Classic Slim Fit Suit", price: 12999, oldPrice: 17999, brand: "Luxury" },
         { name: "Urban Leather Jacket", price: 8999, oldPrice: 12999, brand: "Premium" },
-        { name: "Premium Casual Blazer", price: 7499, oldPrice: 9999, brand: "Luxury" },
-        { name: "Classic Tailored Suit", price: 12999, oldPrice: 17999, brand: "Executive" },
+        { name: "Designer Casual Blazer", price: 7499, oldPrice: 9999, brand: "Luxury" },
+        { name: "Premium Wool Overcoat", price: 10999, oldPrice: 14999, brand: "Executive" },
         { name: "Casual Denim Jacket", price: 5499, oldPrice: 7499, brand: "Premium" },
         { name: "Slim Fit Chino Pants", price: 2499, oldPrice: 3499, brand: "Essential" },
         { name: "Premium Polo Shirt", price: 1999, oldPrice: 2999, brand: "Classic" },
         { name: "Formal Dress Trousers", price: 3499, oldPrice: 4999, brand: "Executive" },
         { name: "Casual Linen Shirt", price: 2799, oldPrice: 3999, brand: "Premium" },
-        { name: "Wool Blend Overcoat", price: 10999, oldPrice: 14999, brand: "Luxury" },
+        { name: "Wool Blend Blazer", price: 8499, oldPrice: 11999, brand: "Luxury" },
         { name: "Cotton Crew Neck T-Shirt", price: 1299, oldPrice: 1999, brand: "Essential" },
         { name: "Premium Denim Jeans", price: 3999, oldPrice: 5499, brand: "Classic" },
         { name: "Sports Track Jacket", price: 4499, oldPrice: 5999, brand: "Active" },
         { name: "Formal Waistcoat", price: 3999, oldPrice: 5499, brand: "Executive" },
-        { name: "Casual Shorts", price: 1799, oldPrice: 2499, brand: "Essential" },
-        { name: "Premium Hoodie", price: 3499, oldPrice: 4999, brand: "Premium" },
+        { name: "Casual Cargo Shorts", price: 1799, oldPrice: 2499, brand: "Essential" },
+        { name: "Premium Pullover Hoodie", price: 3499, oldPrice: 4999, brand: "Premium" },
         { name: "Formal Silk Tie", price: 1499, oldPrice: 1999, brand: "Luxury" },
         { name: "Leather Belt Premium", price: 1999, oldPrice: 2999, brand: "Classic" },
         { name: "Casual Sneakers", price: 4999, oldPrice: 6999, brand: "Active" },
         { name: "Woolen Sweater", price: 2999, oldPrice: 4499, brand: "Premium" },
         { name: "Formal Leather Shoes", price: 6999, oldPrice: 9999, brand: "Luxury" },
         { name: "Casual Flip Flops", price: 999, oldPrice: 1499, brand: "Essential" },
-        { name: "Premium Watch", price: 8999, oldPrice: 12999, brand: "Luxury" },
+        { name: "Premium Luxury Watch", price: 8999, oldPrice: 12999, brand: "Luxury" },
         { name: "Travel Backpack", price: 3999, oldPrice: 5499, brand: "Active" },
       ],
       women: [
-        { name: "Elegant Evening Dress", price: 7499, oldPrice: 9999, brand: "Luxury" },
+        { name: "Elegant Evening Gown", price: 7499, oldPrice: 9999, brand: "Luxury" },
         { name: "Floral Summer Dress", price: 4499, oldPrice: 6499, brand: "Premium" },
         { name: "Classic White Blouse", price: 2499, oldPrice: 3499, brand: "Classic" },
-        { name: "Designer Handbag", price: 6999, oldPrice: 9999, brand: "Luxury" },
-        { name: "High Waist Jeans", price: 3999, oldPrice: 5499, brand: "Premium" },
+        { name: "Designer Leather Handbag", price: 6999, oldPrice: 9999, brand: "Luxury" },
+        { name: "High Waist Skinny Jeans", price: 3999, oldPrice: 5499, brand: "Premium" },
         { name: "Cashmere Sweater", price: 5499, oldPrice: 7499, brand: "Luxury" },
         { name: "Pleated Midi Skirt", price: 3499, oldPrice: 4999, brand: "Premium" },
         { name: "Silk Scarf", price: 1999, oldPrice: 2999, brand: "Classic" },
         { name: "Leather Ankle Boots", price: 7999, oldPrice: 10999, brand: "Luxury" },
         { name: "Casual T-Shirt Dress", price: 2999, oldPrice: 3999, brand: "Essential" },
-        { name: "Woolen Coat", price: 10999, oldPrice: 14999, brand: "Luxury" },
+        { name: "Woolen Long Coat", price: 10999, oldPrice: 14999, brand: "Luxury" },
         { name: "Embroidered Kurta", price: 4999, oldPrice: 6999, brand: "Premium" },
         { name: "Palazzo Pants", price: 2499, oldPrice: 3499, brand: "Classic" },
         { name: "Statement Necklace", price: 3499, oldPrice: 4999, brand: "Luxury" },
@@ -2169,7 +2372,7 @@
         }).join('');
       });
 
-      // New Arrivals (first 8 products from all categories)
+      // New Arrivals (first products from all categories)
       const newGrid = document.getElementById('newProductsGrid');
       const newArrivals = [
         ...PRODUCTS.men.slice(0, 3).map((p, i) => ({...p, cat: 'men', img: IMG.men[i]})),
@@ -2222,7 +2425,7 @@
     function scrollToSection(id) {
       const el = document.getElementById(id);
       if (el) {
-        const offset = 90;
+        const offset = 95;
         const pos = el.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: pos, behavior: 'smooth' });
       }
@@ -2271,10 +2474,10 @@
       });
 
       if (found.length === 0) {
-        results.innerHTML = "<p style='color:#777;text-align:center;padding:20px;'>No products found for \"" + query + "\"</p>";
+        results.innerHTML = "<p style='color:#777;text-align:center;padding:25px;'>No products found for \"" + query + "\"</p>";
       } else {
-        results.innerHTML = found.slice(0, 10).map(p =>
-          `<div style="padding:12px 0;border-bottom:1px solid #eee;cursor:pointer;" onclick="closeSearch(); scrollToSection('${p.cat.toLowerCase()}-products');">
+        results.innerHTML = found.slice(0, 12).map(p =>
+          `<div style="padding:14px 0;border-bottom:1px solid #eee;cursor:pointer;" onclick="closeSearch(); scrollToSection('${p.cat.toLowerCase()}-products');">
             <strong style="font-size:14px;">${p.name}</strong>
             <div style="font-size:12px;color:#999;">${p.cat} • ${formatPrice(p.price)}</div>
           </div>`
@@ -2309,9 +2512,11 @@
           <div class="empty-cart">
             <div class="empty-icon">🛒</div>
             <p>Your cart is empty.</p>
+            <p style="font-size:13px;margin-top:8px;color:#aaa;">Start shopping to add items!</p>
           </div>
         `;
         cartTotal.innerText = "Rs. 0";
+        document.getElementById("checkoutButton").href = "https://wa.me/923339917323";
         return;
       }
 
@@ -2333,7 +2538,7 @@
 
       cartTotal.innerText = formatPrice(total);
 
-      // Update WhatsApp checkout link with cart details
+      // Update WhatsApp checkout link
       const checkoutBtn = document.getElementById("checkoutButton");
       if (cart.length > 0) {
         let message = "Hello Tanu Store! I want to order:\n\n";
@@ -2435,7 +2640,7 @@
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => {
         toast.classList.remove("show");
-      }, 2500);
+      }, 2800);
     }
 
     /* ============================================
@@ -2456,10 +2661,18 @@
 
     window.addEventListener('scroll', () => {
       const btn = document.getElementById('scrollTop');
+      const header = document.getElementById('header');
+      
       if (window.pageYOffset > 500) {
         btn.classList.add('visible');
       } else {
         btn.classList.remove('visible');
+      }
+
+      if (window.pageYOffset > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
       }
     });
 
@@ -2472,9 +2685,9 @@
           entry.target.classList.add('active');
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    document.querySelectorAll('.reveal').forEach(el => {
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
       revealObserver.observe(el);
     });
 
