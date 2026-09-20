@@ -22,8 +22,6 @@
    ============================================ */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-
-/* === GLOBAL MOBILE OVERFLOW FIX === */
 html,body{max-width:100%;overflow-x:hidden;width:100%;position:relative}
 *,*::before,*::after{max-width:100%}
 img,video,iframe{max-width:100%;height:auto}
@@ -109,9 +107,6 @@ input,select,textarea{font-family:inherit}
 @keyframes loaderFade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes loaderLine{0%{transform:translateX(-100%)}50%{transform:translateX(0)}100%{transform:translateX(100%)}}
 
-/* ============================================
-   SCROLL PROGRESS BAR
-   ============================================ */
 .scroll-progress{
   position:fixed;top:0;left:0;height:2px;width:0;
   background:linear-gradient(90deg,var(--gold),var(--gold-2));
@@ -141,7 +136,7 @@ input,select,textarea{font-family:inherit}
 .reveal-r.in{opacity:1;transform:translateX(0)}
 
 /* ============================================
-   ANNOUNCEMENT BAR
+   ANNOUNCEMENT
    ============================================ */
 .announce{
   background:linear-gradient(90deg,#0b0b0d,#1d1d22,#0b0b0d);
@@ -195,6 +190,7 @@ input,select,textarea{font-family:inherit}
   position:relative;padding:10px 16px;
   font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
   color:#3d3d44;transition:color var(--t-fast);border-radius:2px;
+  cursor:pointer;
 }
 .nav a::before{
   content:'';position:absolute;bottom:6px;left:16px;right:16px;height:1px;
@@ -470,6 +466,38 @@ input,select,textarea{font-family:inherit}
 .pcard-price .was{font-size:13px;color:#a8a49b;text-decoration:line-through}
 .pcard-price .off{font-size:10px;font-weight:800;color:var(--danger);letter-spacing:.08em}
 
+/* Product image slider */
+.pcard-slider{position:relative;width:100%;height:100%}
+.pcard-slider .slide{
+  position:absolute;inset:0;opacity:0;
+  transition:opacity .5s var(--ease);pointer-events:none;
+}
+.pcard-slider .slide.active{opacity:1;pointer-events:auto}
+.pcard-slider .slide img{width:100%;height:100%;object-fit:cover}
+.slider-dots{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;z-index:3;
+  background:rgba(11,11,13,.5);backdrop-filter:blur(8px);
+  padding:6px 10px;border-radius:99px;
+}
+.slider-dots button{
+  width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);
+  transition:var(--t);border:0;cursor:pointer;padding:0;
+}
+.slider-dots button.active{background:var(--gold);width:18px;border-radius:99px}
+.slider-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.92);
+  display:grid;place-items:center;font-size:14px;color:var(--ink);
+  z-index:3;border:0;cursor:pointer;transition:var(--t);
+  opacity:0;box-shadow:0 4px 16px rgba(0,0,0,.15);
+}
+.pcard:hover .slider-arrow{opacity:1}
+.slider-arrow:hover{background:var(--gold);color:#fff}
+.slider-arrow.prev{left:10px}
+.slider-arrow.next{right:10px}
+
 /* ============================================
    PROMO SPLIT
    ============================================ */
@@ -494,7 +522,6 @@ input,select,textarea{font-family:inherit}
 .promo-copy h2 em{font-style:italic;color:var(--gold);font-weight:400}
 .promo-copy p{color:#b8b4ac;font-size:15px;line-height:1.85;max-width:460px;margin-bottom:38px}
 
-/* Countdown */
 .countdown{display:flex;gap:14px;margin-bottom:34px;flex-wrap:wrap}
 .cd-box{
   min-width:70px;padding:14px 12px;
@@ -552,7 +579,7 @@ input,select,textarea{font-family:inherit}
 .feat p{font-size:13.5px;color:var(--muted);line-height:1.75}
 
 /* ============================================
-   FOUNDER SECTION
+   FOUNDER
    ============================================ */
 .founder{
   background:linear-gradient(135deg,#0b0b0d 0%,#141418 100%);
@@ -577,10 +604,7 @@ input,select,textarea{font-family:inherit}
   position:relative;z-index:2;
 }
 .founder-media{
-  position:relative;
-  aspect-ratio:4/5;
-  overflow:hidden;
-  background:#000;
+  position:relative;aspect-ratio:4/5;overflow:hidden;background:#000;
 }
 .founder-media img{
   width:100%;height:100%;object-fit:cover;object-position:center;
@@ -596,8 +620,7 @@ input,select,textarea{font-family:inherit}
 .founder-media::after{
   content:'';position:absolute;inset:20px;
   border:1px solid rgba(201,169,97,.4);
-  z-index:3;pointer-events:none;
-  transition:var(--t);
+  z-index:3;pointer-events:none;transition:var(--t);
 }
 .founder-media:hover::after{inset:14px;border-color:var(--gold)}
 .founder-tag{
@@ -626,8 +649,7 @@ input,select,textarea{font-family:inherit}
 .founder-copy h2{
   font-family:var(--font-serif);
   font-size:clamp(36px,4.5vw,58px);
-  line-height:1.08;font-weight:700;letter-spacing:-.015em;
-  margin-bottom:26px;
+  line-height:1.08;font-weight:700;letter-spacing:-.015em;margin-bottom:26px;
 }
 .founder-copy h2 em{font-style:italic;color:var(--gold);font-weight:400}
 .founder-copy .lead{
@@ -636,13 +658,9 @@ input,select,textarea{font-family:inherit}
   color:var(--gold-2);line-height:1.6;margin-bottom:28px;
   padding-left:24px;border-left:2px solid var(--gold);
 }
-.founder-copy p{
-  color:#b8b4ac;font-size:15px;line-height:1.95;
-  margin-bottom:20px;
-}
+.founder-copy p{color:#b8b4ac;font-size:15px;line-height:1.95;margin-bottom:20px}
 .founder-sign{
-  margin-top:36px;
-  display:flex;align-items:center;gap:20px;
+  margin-top:36px;display:flex;align-items:center;gap:20px;
   padding-top:28px;border-top:1px solid rgba(255,255,255,.1);
 }
 .founder-sign .initial{
@@ -699,13 +717,9 @@ input,select,textarea{font-family:inherit}
 .testi-author .name{font-weight:600;font-size:14px;color:#fff}
 .testi-author .role{font-size:11px;color:#8b8b95;letter-spacing:.14em;text-transform:uppercase}
 
-/* ============================================
-   TRUST BADGES
-   ============================================ */
+/* Trust badges */
 .trust{
-  background:var(--cream);
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
+  background:var(--cream);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   padding:36px 0;
 }
 .trust-inner{
@@ -723,9 +737,7 @@ input,select,textarea{font-family:inherit}
    FAQ
    ============================================ */
 .faq{max-width:820px;margin:0 auto}
-.faq-item{
-  border-bottom:1px solid var(--line);padding:28px 0;transition:var(--t);
-}
+.faq-item{border-bottom:1px solid var(--line);padding:28px 0;transition:var(--t)}
 .faq-item:hover{padding-left:12px}
 .faq-q{
   display:flex;justify-content:space-between;align-items:center;gap:20px;
@@ -786,16 +798,10 @@ input,select,textarea{font-family:inherit}
   background:radial-gradient(circle at 50% 50%,rgba(201,169,97,.1),transparent 60%);
 }
 .news-inner{max-width:640px;margin:0 auto;position:relative;z-index:2;padding:110px 32px}
-.news h3{
-  font-family:var(--font-serif);font-size:clamp(32px,4vw,46px);
-  font-weight:700;line-height:1.1;margin-bottom:16px;
-}
+.news h3{font-family:var(--font-serif);font-size:clamp(32px,4vw,46px);font-weight:700;line-height:1.1;margin-bottom:16px}
 .news h3 em{font-style:italic;color:var(--gold);font-weight:400}
 .news p{color:#a8a49b;margin-bottom:38px;font-size:15px;line-height:1.8}
-.news-form{
-  display:flex;gap:0;max-width:520px;margin:0 auto;
-  border:1px solid rgba(201,169,97,.35);
-}
+.news-form{display:flex;gap:0;max-width:520px;margin:0 auto;border:1px solid rgba(201,169,97,.35)}
 .news-form input{
   flex:1;padding:20px 26px;background:transparent;border:0;color:#fff;
   font-size:14px;outline:none;letter-spacing:.02em;min-width:0;
@@ -817,10 +823,7 @@ input,select,textarea{font-family:inherit}
   max-width:1360px;margin:0 auto;padding:0 32px;
   display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:60px;
 }
-.foot-brand{
-  font-family:var(--font-serif);font-size:32px;font-weight:900;
-  letter-spacing:.14em;color:#fff;margin-bottom:22px;
-}
+.foot-brand{font-family:var(--font-serif);font-size:32px;font-weight:900;letter-spacing:.14em;color:#fff;margin-bottom:22px}
 .foot-brand .dot{color:var(--gold)}
 .foot-brand em{font-style:italic;font-weight:400;color:var(--gold)}
 .foot p{font-size:14px;line-height:1.9;color:#7c7c85}
@@ -832,18 +835,11 @@ input,select,textarea{font-family:inherit}
   transition:var(--t);color:#a8a49b;font-size:15px;
 }
 .foot-social:hover{background:var(--gold);color:var(--ink);border-color:var(--gold);transform:translateY(-4px)}
-.foot h5{
-  font-family:var(--font-body);font-size:11px;font-weight:800;
-  letter-spacing:.28em;text-transform:uppercase;color:#fff;margin-bottom:26px;
-}
+.foot h5{font-family:var(--font-body);font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:#fff;margin-bottom:26px}
 .foot-links{display:flex;flex-direction:column;gap:14px}
-.foot-links a{
-  font-size:14px;color:#8b8b95;transition:var(--t);display:inline-block;width:fit-content;
-}
+.foot-links a{font-size:14px;color:#8b8b95;transition:var(--t);display:inline-block;width:fit-content}
 .foot-links a:hover{color:var(--gold);transform:translateX(6px)}
-.foot-bottom{
-  text-align:center;padding:28px 32px;font-size:12px;letter-spacing:.14em;color:#565660;
-}
+.foot-bottom{text-align:center;padding:28px 32px;font-size:12px;letter-spacing:.14em;color:#565660}
 .foot-bottom .sep{margin:0 12px;color:var(--gold)}
 
 /* ============================================
@@ -907,20 +903,14 @@ input,select,textarea{font-family:inherit}
   border-bottom:1px solid var(--line);flex-shrink:0;
 }
 .drawer-head h3{font-family:var(--font-serif);font-size:24px;font-weight:700}
-.drawer-head .count{
-  font-size:12px;font-weight:600;color:var(--gold-3);
-  letter-spacing:.14em;text-transform:uppercase;margin-left:8px;
-}
+.drawer-head .count{font-size:12px;font-weight:600;color:var(--gold-3);letter-spacing:.14em;text-transform:uppercase;margin-left:8px}
 .drawer-close{
   width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
   font-size:22px;color:var(--ink);transition:var(--t);cursor:pointer;
 }
 .drawer-close:hover{background:var(--cream-2);transform:rotate(90deg)}
 .drawer-body{flex:1;overflow-y:auto;padding:24px 32px}
-.drawer-foot{
-  padding:24px 32px;border-top:1px solid var(--line);
-  background:var(--cream);flex-shrink:0;
-}
+.drawer-foot{padding:24px 32px;border-top:1px solid var(--line);background:var(--cream);flex-shrink:0}
 .cart-line{
   display:flex;gap:18px;padding:18px 0;
   border-bottom:1px solid var(--line);animation:fadeIn .3s var(--ease);
@@ -948,7 +938,7 @@ input,select,textarea{font-family:inherit}
 }
 
 /* ============================================
-   MODAL
+   PRODUCT MODAL
    ============================================ */
 .modal-ov{
   position:fixed;inset:0;z-index:2000;background:rgba(11,11,13,.85);
@@ -961,7 +951,6 @@ input,select,textarea{font-family:inherit}
   animation:scaleIn .4s var(--ease);
 }
 .modal-media{background:var(--cream-2);position:relative;min-height:600px;overflow:hidden}
-.modal-media img{width:100%;height:100%;object-fit:cover}
 .modal-info{padding:60px 52px;display:flex;flex-direction:column;justify-content:center}
 .modal-info .brand-line{
   font-size:10px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;
@@ -989,8 +978,7 @@ input,select,textarea{font-family:inherit}
 }
 .size-guide{
   font-size:10px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--gold-3);text-decoration:underline;cursor:pointer;
-  font-weight:700;
+  color:var(--gold-3);text-decoration:underline;cursor:pointer;font-weight:700;
 }
 .size-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
 .size-btn{
@@ -1018,7 +1006,28 @@ input,select,textarea{font-family:inherit}
 }
 .modal-close:hover{background:var(--ink);color:var(--gold);transform:rotate(90deg)}
 
-/* Size Guide Modal */
+.modal-slider{position:relative;width:100%;height:100%;min-height:600px}
+.modal-slider .mslide{
+  position:absolute;inset:0;opacity:0;transition:opacity .5s var(--ease);pointer-events:none;
+}
+.modal-slider .mslide.active{opacity:1;pointer-events:auto}
+.modal-slider .mslide img{width:100%;height:100%;object-fit:cover}
+.modal-thumbs{
+  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:4;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(8px);
+  padding:8px;border-radius:4px;max-width:90%;overflow-x:auto;
+}
+.modal-thumbs button{
+  width:52px;height:64px;flex-shrink:0;border:2px solid transparent;
+  background:none;padding:0;cursor:pointer;transition:var(--t);border-radius:2px;
+  overflow:hidden;
+}
+.modal-thumbs button img{width:100%;height:100%;object-fit:cover}
+.modal-thumbs button.active{border-color:var(--gold)}
+.modal-thumbs button:hover{border-color:var(--ink)}
+
+/* Size Guide */
 .sg-modal{
   position:fixed;inset:0;z-index:2100;background:rgba(11,11,13,.85);
   backdrop-filter:blur(6px);display:none;padding:40px 20px;overflow-y:auto;
@@ -1031,26 +1040,19 @@ input,select,textarea{font-family:inherit}
 .sg-inner h2{font-family:var(--font-serif);font-size:28px;margin-bottom:10px}
 .sg-inner > p{color:var(--muted);font-size:14px;margin-bottom:26px}
 .sg-table{width:100%;border-collapse:collapse;font-size:13px}
-.sg-table th,.sg-table td{
-  padding:12px 14px;text-align:left;
-  border-bottom:1px solid var(--line);
-}
+.sg-table th,.sg-table td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
 .sg-table th{
   font-size:10px;letter-spacing:.2em;text-transform:uppercase;
   color:var(--gold-3);font-weight:700;background:var(--cream);
 }
 .sg-table td{color:var(--ink);font-weight:500}
 
-/* ============================================
-   MOBILE STICKY ADD TO CART
-   ============================================ */
+/* Mobile CTA */
 .mobile-cta{
   position:fixed;left:0;right:0;bottom:0;z-index:850;
   background:rgba(255,255,255,.97);
-  backdrop-filter:blur(20px);
-  border-top:1px solid var(--line);
-  padding:12px 16px;
-  display:none;gap:10px;align-items:center;
+  backdrop-filter:blur(20px);border-top:1px solid var(--line);
+  padding:12px 16px;display:none;gap:10px;align-items:center;
   box-shadow:0 -8px 30px rgba(0,0,0,.08);
 }
 .mobile-cta.open{display:flex}
@@ -1067,9 +1069,7 @@ input,select,textarea{font-family:inherit}
 }
 .mobile-cta button:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
 
-/* ============================================
-   SCROLL TOP
-   ============================================ */
+/* Scroll top */
 .scroll-top{
   position:fixed;bottom:32px;right:32px;z-index:800;
   width:52px;height:52px;border-radius:50%;background:var(--ink);color:#fff;
@@ -1079,20 +1079,14 @@ input,select,textarea{font-family:inherit}
 }
 .scroll-top.show{opacity:1;visibility:visible;transform:translateY(0)}
 .scroll-top:hover{background:var(--gold);color:var(--ink);transform:translateY(-4px)}
-.scroll-top svg.ring{
-  position:absolute;inset:0;width:100%;height:100%;
-  transform:rotate(-90deg);
-  pointer-events:none;
-}
+.scroll-top svg.ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);pointer-events:none}
 .scroll-top .ring circle{
   fill:none;stroke:var(--gold);stroke-width:2;
   stroke-dasharray:163;stroke-dashoffset:163;
   transition:stroke-dashoffset .1s linear;
 }
 
-/* ============================================
-   TOAST
-   ============================================ */
+/* Toast */
 .toast{
   position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120%);
   background:var(--ink);color:#fff;padding:16px 28px;
@@ -1208,6 +1202,9 @@ input,select,textarea{font-family:inherit}
   .cd-box{min-width:60px;padding:10px 8px}
   .cd-num{font-size:22px}
   .cd-lbl{font-size:8px}
+  .slider-arrow{width:30px;height:30px;font-size:12px;opacity:1}
+  .modal-thumbs{padding:6px;gap:6px}
+  .modal-thumbs button{width:42px;height:52px}
 }
 
 @media (max-width:380px){
@@ -1219,119 +1216,27 @@ input,select,textarea{font-family:inherit}
   .founder-copy h2{font-size:28px}
 }
 
-/* Fix: prevent overflow after zoom out */
 @media (max-width:900px){
   html,body{overflow-x:clip}
   .hero,.hero-inner,.cats,.products,.feats,.testi-grid,.contact-grid,
-  .promo-split,.about-stats,.announce,.container,.founder-inner,.foot-inner{
+  .promo-split,.announce,.container,.founder-inner,.foot-inner{
     max-width:100vw;overflow-x:hidden;
   }
-}
-
-/* ============================================
-   PRODUCT IMAGE SLIDER (MULTI-IMAGE SUPPORT)
-   ============================================ */
-.pcard-slider{
-  position:relative;width:100%;height:100%;
-}
-.pcard-slider .slide{
-  position:absolute;inset:0;
-  opacity:0;transition:opacity .5s var(--ease);
-  pointer-events:none;
-}
-.pcard-slider .slide.active{opacity:1;pointer-events:auto}
-.pcard-slider .slide img{
-  width:100%;height:100%;object-fit:cover;
-}
-.slider-dots{
-  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
-  display:flex;gap:6px;z-index:3;
-  background:rgba(11,11,13,.5);
-  backdrop-filter:blur(8px);
-  padding:6px 10px;border-radius:99px;
-}
-.slider-dots button{
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(255,255,255,.5);
-  transition:var(--t);
-  border:0;cursor:pointer;padding:0;
-}
-.slider-dots button.active{
-  background:var(--gold);width:18px;border-radius:99px;
-}
-.slider-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);
-  width:34px;height:34px;border-radius:50%;
-  background:rgba(255,255,255,.92);
-  display:grid;place-items:center;
-  font-size:14px;color:var(--ink);
-  z-index:3;border:0;cursor:pointer;
-  transition:var(--t);
-  opacity:0;
-  box-shadow:0 4px 16px rgba(0,0,0,.15);
-}
-.pcard:hover .slider-arrow{opacity:1}
-.slider-arrow:hover{background:var(--gold);color:#fff}
-.slider-arrow.prev{left:10px}
-.slider-arrow.next{right:10px}
-
-.modal-slider{
-  position:relative;width:100%;height:100%;
-  min-height:600px;
-}
-.modal-slider .mslide{
-  position:absolute;inset:0;
-  opacity:0;transition:opacity .5s var(--ease);
-  pointer-events:none;
-}
-.modal-slider .mslide.active{opacity:1;pointer-events:auto}
-.modal-slider .mslide img{width:100%;height:100%;object-fit:cover}
-
-.modal-thumbs{
-  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
-  display:flex;gap:8px;z-index:4;
-  background:rgba(255,255,255,.9);
-  backdrop-filter:blur(8px);
-  padding:8px;border-radius:4px;
-  max-width:90%;
-  overflow-x:auto;
-}
-.modal-thumbs button{
-  width:52px;height:64px;flex-shrink:0;
-  border:2px solid transparent;
-  background:none;padding:0;cursor:pointer;
-  transition:var(--t);border-radius:2px;
-  overflow:hidden;
-}
-.modal-thumbs button img{
-  width:100%;height:100%;object-fit:cover;
-}
-.modal-thumbs button.active{
-  border-color:var(--gold);
-}
-.modal-thumbs button:hover{
-  border-color:var(--ink);
-}
-
-@media (max-width:640px){
-  .slider-arrow{width:30px;height:30px;font-size:12px;opacity:1}
-  .modal-thumbs{padding:6px;gap:6px}
-  .modal-thumbs button{width:42px;height:52px}
 }
 </style>
 </head>
 <body>
 
-<!-- ================= PRELOADER ================= -->
+<!-- PRELOADER -->
 <div class="preloader" id="preloader">
   <div class="brand-loader">TANU<em>·</em>STORE</div>
   <div class="load-line"></div>
 </div>
 
-<!-- ================= SCROLL PROGRESS ================= -->
+<!-- SCROLL PROGRESS -->
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- ================= ANNOUNCEMENT ================= -->
+<!-- ANNOUNCEMENT -->
 <div class="announce">
   <div class="announce-track">
     <span>Free shipping on orders above Rs. 5,000</span>
@@ -1345,19 +1250,19 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- ================= HEADER ================= -->
+<!-- HEADER -->
 <header class="hdr" id="hdr">
   <div class="hdr-inner">
-    <a href="#home" class="brand">TANU<em>·</em>STORE</a>
+    <a href="#home" class="brand" onclick="smoothScrollTo('#home');return false;">TANU<em>·</em>STORE</a>
 
     <ul class="nav">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#men">Men</a></li>
-      <li><a href="#women">Women</a></li>
-      <li><a href="#kids">Kids</a></li>
-      <li><a href="#new">New In</a></li>
-      <li><a href="#sale">Sale</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a onclick="smoothScrollTo('#home');return false;">Home</a></li>
+      <li><a onclick="smoothScrollTo('#men');return false;">Men</a></li>
+      <li><a onclick="smoothScrollTo('#women');return false;">Women</a></li>
+      <li><a onclick="smoothScrollTo('#kids');return false;">Kids</a></li>
+      <li><a onclick="smoothScrollTo('#new');return false;">New In</a></li>
+      <li><a onclick="smoothScrollTo('#sale');return false;">Sale</a></li>
+      <li><a onclick="smoothScrollTo('#contact');return false;">Contact</a></li>
     </ul>
 
     <div class="hdr-actions">
@@ -1375,26 +1280,26 @@ input,select,textarea{font-family:inherit}
   </div>
 </header>
 
-<!-- ================= MOBILE NAV ================= -->
+<!-- MOBILE NAV -->
 <nav class="mobile-nav" id="mobileNav">
   <div class="mobile-nav-head">
     <span class="brand" style="color:#fff">TANU<em>·</em>STORE</span>
     <button class="mobile-nav-close" onclick="closeMobileNav()">×</button>
   </div>
   <ul>
-    <li><a href="#home" onclick="closeMobileNav()">Home</a></li>
-    <li><a href="#men" onclick="closeMobileNav()">Men</a></li>
-    <li><a href="#women" onclick="closeMobileNav()">Women</a></li>
-    <li><a href="#kids" onclick="closeMobileNav()">Kids</a></li>
-    <li><a href="#new" onclick="closeMobileNav()">New In</a></li>
-    <li><a href="#sale" onclick="closeMobileNav()">Sale</a></li>
-    <li><a href="#contact" onclick="closeMobileNav()">Contact</a></li>
+    <li><a onclick="closeMobileNav();smoothScrollTo('#home');return false;">Home</a></li>
+    <li><a onclick="closeMobileNav();smoothScrollTo('#men');return false;">Men</a></li>
+    <li><a onclick="closeMobileNav();smoothScrollTo('#women');return false;">Women</a></li>
+    <li><a onclick="closeMobileNav();smoothScrollTo('#kids');return false;">Kids</a></li>
+    <li><a onclick="closeMobileNav();smoothScrollTo('#new');return false;">New In</a></li>
+    <li><a onclick="closeMobileNav();smoothScrollTo('#sale');return false;">Sale</a></li>
+    <li><a onclick="closeMobileNav();smoothScrollTo('#contact');return false;">Contact</a></li>
   </ul>
   <div class="mobile-nav-foot">© Tanu Store — Premium Fashion</div>
 </nav>
 
-<!-- ================= HERO ================= -->
 <main id="home">
+<!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-inner">
@@ -1406,29 +1311,20 @@ input,select,textarea{font-family:inherit}
         crafted for those who appreciate the finest details. Experience the difference.
       </p>
       <div class="hero-cta">
-        <a href="#new" class="btn">Shop Collection <span class="arrow">→</span></a>
-        <a href="#sale" class="btn btn-ghost">View Sale</a>
+        <a onclick="smoothScrollTo('#new');return false;" class="btn" style="cursor:pointer">Shop Collection <span class="arrow">→</span></a>
+        <a onclick="smoothScrollTo('#sale');return false;" class="btn btn-ghost" style="cursor:pointer">View Sale</a>
       </div>
     </div>
     <div class="hero-side">
-      <div class="hero-card">
-        <span class="num">75+</span>
-        <span class="lbl">Curated Products</span>
-      </div>
-      <div class="hero-card">
-        <span class="num">4.9★</span>
-        <span class="lbl">Customer Rating</span>
-      </div>
-      <div class="hero-card">
-        <span class="num">24/7</span>
-        <span class="lbl">WhatsApp Support</span>
-      </div>
+      <div class="hero-card"><span class="num">75+</span><span class="lbl">Curated Products</span></div>
+      <div class="hero-card"><span class="num">4.9★</span><span class="lbl">Customer Rating</span></div>
+      <div class="hero-card"><span class="num">24/7</span><span class="lbl">WhatsApp Support</span></div>
     </div>
   </div>
   <div class="hero-scroll">Scroll</div>
 </section>
 
-<!-- ================= TRUST BADGES ================= -->
+<!-- TRUST -->
 <section class="trust">
   <div class="trust-inner">
     <div class="trust-item">
@@ -1450,7 +1346,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= CATEGORIES ================= -->
+<!-- CATEGORIES -->
 <section class="section" id="categories">
   <div class="container">
     <div class="sec-head reveal">
@@ -1458,9 +1354,8 @@ input,select,textarea{font-family:inherit}
       <h2>Shop by <em>category</em></h2>
       <p>Find your perfect style from our premium branded collections.</p>
     </div>
-
     <div class="cats">
-      <article class="cat men reveal" onclick="scrollTo('#men')">
+      <article class="cat men reveal" onclick="smoothScrollTo('#men')">
         <div class="cat-bg"></div>
         <span class="num">01 / Men</span>
         <div class="cat-content">
@@ -1469,7 +1364,7 @@ input,select,textarea{font-family:inherit}
           <span class="cat-link">Shop Men</span>
         </div>
       </article>
-      <article class="cat women reveal" style="transition-delay:.1s" onclick="scrollTo('#women')">
+      <article class="cat women reveal" style="transition-delay:.1s" onclick="smoothScrollTo('#women')">
         <div class="cat-bg"></div>
         <span class="num">02 / Women</span>
         <div class="cat-content">
@@ -1478,7 +1373,7 @@ input,select,textarea{font-family:inherit}
           <span class="cat-link">Shop Women</span>
         </div>
       </article>
-      <article class="cat kids reveal" style="transition-delay:.2s" onclick="scrollTo('#kids')">
+      <article class="cat kids reveal" style="transition-delay:.2s" onclick="smoothScrollTo('#kids')">
         <div class="cat-bg"></div>
         <span class="num">03 / Kids</span>
         <div class="cat-content">
@@ -1491,7 +1386,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= NEW ARRIVALS ================= -->
+<!-- NEW ARRIVALS -->
 <section class="section" id="new" style="background:var(--cream)">
   <div class="container">
     <div class="sec-head reveal">
@@ -1503,7 +1398,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= PROMO SPLIT ================= -->
+<!-- PROMO -->
 <section class="promo-split" id="sale">
   <div class="promo-copy reveal-l">
     <span class="eyebrow">Limited Time</span>
@@ -1515,7 +1410,7 @@ input,select,textarea{font-family:inherit}
       <div class="cd-box"><span class="cd-num" id="cdS">22</span><span class="cd-lbl">Secs</span></div>
     </div>
     <p>Explore our exclusive sale collection — premium branded fashion at unbeatable prices. Don't miss out on these limited-time offers.</p>
-    <a href="#new" class="btn btn-gold">Shop the Sale <span class="arrow">→</span></a>
+    <a onclick="smoothScrollTo('#new');return false;" class="btn btn-gold" style="cursor:pointer">Shop the Sale <span class="arrow">→</span></a>
   </div>
   <div class="promo-visual">
     <div class="promo-badge">
@@ -1525,7 +1420,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= MEN ================= -->
+<!-- MEN -->
 <section class="section" id="men">
   <div class="container">
     <div class="sec-head reveal">
@@ -1537,7 +1432,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= WOMEN ================= -->
+<!-- WOMEN -->
 <section class="section" id="women" style="background:var(--cream)">
   <div class="container">
     <div class="sec-head reveal">
@@ -1549,7 +1444,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= KIDS ================= -->
+<!-- KIDS -->
 <section class="section" id="kids">
   <div class="container">
     <div class="sec-head reveal">
@@ -1561,7 +1456,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= FEATURES ================= -->
+<!-- FEATURES -->
 <section class="section">
   <div class="container">
     <div class="sec-head reveal">
@@ -1593,31 +1488,22 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= FOUNDER / ABOUT ================= -->
+<!-- FOUNDER -->
 <section class="founder" id="about">
   <div class="founder-inner">
     <div class="founder-media reveal-l">
-      <img src="founder.jpeg" alt="Tanu Store Founder — Premium Fashion Pakistan">
+      <img src="founder.jpeg" alt="Tanu Store Founder">
       <div class="founder-tag">
         <div class="name">Founder & Creative Director</div>
         <div class="role">Tanu Store</div>
       </div>
     </div>
-
     <div class="founder-copy reveal-r">
       <span class="eyebrow">Our Story</span>
       <h2>Fashion made with <em>passion.</em></h2>
       <p class="lead">"Every stitch tells a story. Every piece carries a promise."</p>
-      <p>
-        Tanu Store was born from a simple belief — that premium fashion shouldn't be a luxury reserved for the few. 
-        We travel, we curate, and we hand-pick each piece to ensure it meets our uncompromising standards of quality, 
-        comfort and style.
-      </p>
-      <p>
-        From the mountains of Northern Pakistan to the bustling streets of Lahore and Karachi, our journey has been 
-        about bringing world-class branded fashion to every doorstep in Pakistan. Whether you're dressing for a 
-        special occasion or elevating your everyday look — we're here to help you express who you truly are.
-      </p>
+      <p>Tanu Store was born from a simple belief — that premium fashion shouldn't be a luxury reserved for the few. We travel, we curate, and we hand-pick each piece to ensure it meets our uncompromising standards of quality, comfort and style.</p>
+      <p>From the mountains of Northern Pakistan to the bustling streets of Lahore and Karachi, our journey has been about bringing world-class branded fashion to every doorstep in Pakistan.</p>
       <div class="founder-sign">
         <div class="initial">T</div>
         <div>
@@ -1629,7 +1515,7 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ================= TESTIMONIALS ================= -->
+<!-- TESTIMONIALS -->
 <section class="section testis">
   <div class="container">
     <div class="sec-head reveal">
@@ -1641,41 +1527,23 @@ input,select,textarea{font-family:inherit}
       <div class="testi reveal">
         <div class="testi-stars">★★★★★</div>
         <q>Quality is outstanding and the delivery was super quick. Tanu Store is now my go-to for branded fashion.</q>
-        <div class="testi-author">
-          <div class="testi-avatar">A</div>
-          <div>
-            <div class="name">Ahmed Khan</div>
-            <div class="role">Lahore</div>
-          </div>
-        </div>
+        <div class="testi-author"><div class="testi-avatar">A</div><div><div class="name">Ahmed Khan</div><div class="role">Lahore</div></div></div>
       </div>
       <div class="testi reveal" style="transition-delay:.1s">
         <div class="testi-stars">★★★★★</div>
         <q>Ordered a dress for my daughter — the fabric and stitching are premium. Very happy with the purchase.</q>
-        <div class="testi-author">
-          <div class="testi-avatar">F</div>
-          <div>
-            <div class="name">Fatima Ali</div>
-            <div class="role">Karachi</div>
-          </div>
-        </div>
+        <div class="testi-author"><div class="testi-avatar">F</div><div><div class="name">Fatima Ali</div><div class="role">Karachi</div></div></div>
       </div>
       <div class="testi reveal" style="transition-delay:.2s">
         <div class="testi-stars">★★★★★</div>
         <q>The WhatsApp ordering process is so smooth. Professional service and genuine branded products.</q>
-        <div class="testi-author">
-          <div class="testi-avatar">H</div>
-          <div>
-            <div class="name">Hassan Raza</div>
-            <div class="role">Islamabad</div>
-          </div>
-        </div>
+        <div class="testi-author"><div class="testi-avatar">H</div><div><div class="name">Hassan Raza</div><div class="role">Islamabad</div></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= FAQ ================= -->
+<!-- FAQ -->
 <section class="section" id="faq">
   <div class="container">
     <div class="sec-head reveal">
@@ -1685,33 +1553,33 @@ input,select,textarea{font-family:inherit}
     <div class="faq reveal">
       <details class="faq-item">
         <summary class="faq-q">How can I place an order? <span class="ico">+</span></summary>
-        <p class="faq-a">Add products to your cart, then tap "Order on WhatsApp" — your cart details will be pre-filled in a WhatsApp message. We'll confirm your order and delivery details from there.</p>
+        <p class="faq-a">Add products to your cart, then tap "Order on WhatsApp" — your cart details will be pre-filled in a WhatsApp message.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-q">Do you offer Men, Women and Kids collections? <span class="ico">+</span></summary>
-        <p class="faq-a">Yes! Tanu Store offers 75+ premium branded products across Men, Women and Kids categories. Explore each section from the navigation menu.</p>
+        <p class="faq-a">Yes! Tanu Store offers premium branded products across Men, Women and Kids categories.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-q">How can I contact Tanu Store? <span class="ico">+</span></summary>
-        <p class="faq-a">You can reach us on WhatsApp at +92 333 9917323 or follow @tanver_aly on Instagram. We reply quickly and are happy to help.</p>
+        <p class="faq-a">You can reach us on WhatsApp at +92 333 9917323 or follow @tanver_aly on Instagram.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-q">Can I ask about sizes before ordering? <span class="ico">+</span></summary>
-        <p class="faq-a">Absolutely. Message us on WhatsApp and we'll share available sizes, measurements, and product details so you can order with confidence.</p>
+        <p class="faq-a">Absolutely. Message us on WhatsApp and we'll share available sizes, measurements, and product details.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-q">Do you deliver across Pakistan? <span class="ico">+</span></summary>
-        <p class="faq-a">Yes — we deliver nationwide. Free shipping on orders above Rs. 5,000. Standard charges may apply for smaller orders depending on your location.</p>
+        <p class="faq-a">Yes — we deliver nationwide. Free shipping on orders above Rs. 5,000.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-q">What is your return policy? <span class="ico">+</span></summary>
-        <p class="faq-a">If you receive a damaged or incorrect item, contact us within 24 hours of delivery and we'll resolve it promptly with a replacement or refund.</p>
+        <p class="faq-a">If you receive a damaged or incorrect item, contact us within 24 hours of delivery.</p>
       </details>
     </div>
   </div>
 </section>
 
-<!-- ================= CONTACT ================= -->
+<!-- CONTACT -->
 <section class="section" id="contact" style="background:var(--cream)">
   <div class="container">
     <div class="sec-head reveal">
@@ -1725,27 +1593,21 @@ input,select,textarea{font-family:inherit}
         <h3>Social Media</h3>
         <p>Follow Tanu Store and be the first to see our latest premium arrivals and exclusive offers.</p>
         <div class="socials">
-          <a class="social-btn" href="https://www.instagram.com/tanver_aly?stkn=MXUzdjcyZjFxMnVsOA%3D%3D&utm_source=qr" target="_blank" rel="noopener">
-            Instagram →
-          </a>
-          <a class="social-btn" href="https://www.facebook.com/" target="_blank" rel="noopener">
-            Facebook →
-          </a>
+          <a class="social-btn" href="https://www.instagram.com/tanver_aly?stkn=MXUzdjcyZjFxMnVsOA%3D%3D&utm_source=qr" target="_blank" rel="noopener">Instagram →</a>
+          <a class="social-btn" href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook →</a>
         </div>
       </div>
       <div class="contact-card reveal-r">
         <span class="icon-lg">💬</span>
         <h3>Order on WhatsApp</h3>
         <p>Want to order or ask about a product? Message Tanu Store directly on WhatsApp for a fast and personal response.</p>
-        <a class="btn btn-gold" href="https://wa.me/923339917323" target="_blank" rel="noopener">
-          WhatsApp Us <span class="arrow">→</span>
-        </a>
+        <a class="btn btn-gold" href="https://wa.me/923339917323" target="_blank" rel="noopener">WhatsApp Us <span class="arrow">→</span></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= NEWSLETTER ================= -->
+<!-- NEWSLETTER -->
 <section class="news">
   <div class="news-inner reveal">
     <h3>Stay <em>updated.</em></h3>
@@ -1758,7 +1620,7 @@ input,select,textarea{font-family:inherit}
 </section>
 </main>
 
-<!-- ================= FOOTER ================= -->
+<!-- FOOTER -->
 <footer class="foot">
   <div class="foot-top">
     <div class="foot-inner">
@@ -1766,28 +1628,28 @@ input,select,textarea{font-family:inherit}
         <div class="foot-brand">TANU<em>·</em>STORE</div>
         <p>Premium branded fashion for Men, Women and Kids. Where quality meets elegance and luxury meets affordability.</p>
         <div class="foot-socials">
-          <a class="foot-social" href="https://www.instagram.com/tanver_aly?stkn=MXUzdjcyZjFxMnVsOA%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">◐</a>
-          <a class="foot-social" href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">f</a>
-          <a class="foot-social" href="https://wa.me/923339917323" target="_blank" rel="noopener" aria-label="WhatsApp">✆</a>
+          <a class="foot-social" href="https://www.instagram.com/tanver_aly?stkn=MXUzdjcyZjFxMnVsOA%3D%3D&utm_source=qr" target="_blank" rel="noopener">◐</a>
+          <a class="foot-social" href="https://www.facebook.com/" target="_blank" rel="noopener">f</a>
+          <a class="foot-social" href="https://wa.me/923339917323" target="_blank" rel="noopener">✆</a>
         </div>
       </div>
       <div>
         <h5>Shop</h5>
         <div class="foot-links">
-          <a href="#men">Men's Fashion</a>
-          <a href="#women">Women's Fashion</a>
-          <a href="#kids">Kids Fashion</a>
-          <a href="#new">New Arrivals</a>
-          <a href="#sale">Sale</a>
+          <a onclick="smoothScrollTo('#men')" style="cursor:pointer">Men's Fashion</a>
+          <a onclick="smoothScrollTo('#women')" style="cursor:pointer">Women's Fashion</a>
+          <a onclick="smoothScrollTo('#kids')" style="cursor:pointer">Kids Fashion</a>
+          <a onclick="smoothScrollTo('#new')" style="cursor:pointer">New Arrivals</a>
+          <a onclick="smoothScrollTo('#sale')" style="cursor:pointer">Sale</a>
         </div>
       </div>
       <div>
         <h5>Company</h5>
         <div class="foot-links">
-          <a href="#about">About Us</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">Contact</a>
-          <a href="#home">Back to Top</a>
+          <a onclick="smoothScrollTo('#about')" style="cursor:pointer">About Us</a>
+          <a onclick="smoothScrollTo('#faq')" style="cursor:pointer">FAQ</a>
+          <a onclick="smoothScrollTo('#contact')" style="cursor:pointer">Contact</a>
+          <a onclick="smoothScrollTo('#home')" style="cursor:pointer">Back to Top</a>
         </div>
       </div>
       <div>
@@ -1800,18 +1662,16 @@ input,select,textarea{font-family:inherit}
       </div>
     </div>
   </div>
-  <div class="foot-bottom">
-    © <span id="year"></span> Tanu Store<span class="sep">◆</span>All Rights Reserved<span class="sep">◆</span>Designed with care in Pakistan
-  </div>
+  <div class="foot-bottom">© <span id="year"></span> Tanu Store<span class="sep">◆</span>All Rights Reserved<span class="sep">◆</span>Designed with care in Pakistan</div>
 </footer>
 
-<!-- ================= SCROLL TOP (with ring) ================= -->
+<!-- SCROLL TOP -->
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
   <svg class="ring" viewBox="0 0 52 52"><circle cx="26" cy="26" r="26"/></svg>
   <span style="position:relative;z-index:2">↑</span>
 </button>
 
-<!-- ================= MOBILE STICKY CTA ================= -->
+<!-- MOBILE CTA -->
 <div class="mobile-cta" id="mobileCta">
   <div class="mc-info">
     <div class="mc-name" id="mcName">Select a product</div>
@@ -1820,7 +1680,7 @@ input,select,textarea{font-family:inherit}
   <button onclick="addFromMobileCta()">Add to Cart</button>
 </div>
 
-<!-- ================= SEARCH ================= -->
+<!-- SEARCH -->
 <div class="search-ov" id="searchOv">
   <div class="search-inner">
     <div class="search-head">
@@ -1835,9 +1695,9 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- ================= CART DRAWER ================= -->
+<!-- CART -->
 <div class="drawer-ov" id="drawerOv" onclick="closeCart()"></div>
-<aside class="drawer" id="cartDrawer" aria-label="Shopping cart">
+<aside class="drawer" id="cartDrawer">
   <div class="drawer-head">
     <h3>Your Cart <span class="count" id="cartCountLabel">0 items</span></h3>
     <button class="drawer-close" onclick="closeCart()">×</button>
@@ -1847,13 +1707,11 @@ input,select,textarea{font-family:inherit}
     <div class="sub-row"><span>Subtotal</span><span id="cartSubtotal">Rs. 0</span></div>
     <div class="sub-row"><span>Shipping</span><span id="cartShipping">Free</span></div>
     <div class="sub-row grand"><span>Total</span><span id="cartTotal">Rs. 0</span></div>
-    <a id="checkoutBtn" class="btn btn-gold" style="width:100%;margin-top:20px" href="https://wa.me/923339917323" target="_blank" rel="noopener">
-      Order on WhatsApp <span class="arrow">→</span>
-    </a>
+    <a id="checkoutBtn" class="btn btn-gold" style="width:100%;margin-top:20px" href="https://wa.me/923339917323" target="_blank" rel="noopener">Order on WhatsApp <span class="arrow">→</span></a>
   </div>
 </aside>
 
-<!-- ================= PRODUCT MODAL ================= -->
+<!-- PRODUCT MODAL -->
 <div class="modal-ov" id="modalOv">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -1879,16 +1737,14 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- ================= SIZE GUIDE MODAL ================= -->
+<!-- SIZE GUIDE -->
 <div class="sg-modal" id="sgModal">
   <div class="sg-inner">
     <button class="modal-close" onclick="closeSizeGuide()" style="position:absolute;top:16px;right:16px">×</button>
     <h2>Size Guide</h2>
     <p>Find your perfect fit — measurements are in inches.</p>
     <table class="sg-table">
-      <thead>
-        <tr><th>Size</th><th>Chest</th><th>Waist</th><th>Length</th></tr>
-      </thead>
+      <thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Length</th></tr></thead>
       <tbody>
         <tr><td>XS</td><td>34"</td><td>28"</td><td>26"</td></tr>
         <tr><td>S</td><td>36"</td><td>30"</td><td>27"</td></tr>
@@ -1902,22 +1758,23 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- ================= TOAST ================= -->
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 /* ============================================
-   MEN PRODUCTS WITH MULTIPLE IMAGES
-   (Pehle 2 real products, baaki filhaal Unsplash)
+   PRODUCT DATA — REAL MARKAZ IMAGES
    ============================================ */
+const FALLBACK_IMG = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85";
+
 const IMG = {
   men: [
-    // Product 1: Men's Unstitched Khaddar Suit Tan 4.5M — 2 images
+    // 1. Men's Unstitched Khaddar Suit Tan 4.5M — 2 images
     [
       "https://static.markaz.app/pakistan/products/1303-17-719596-product-1.webp",
       "https://static.markaz.app/pakistan/products/1303-17-719596-product-2.webp"
     ],
-    // Product 2: Balenberry Long Wallet Men's Leather Wallet — 5 images
+    // 2. Balenberry Long Wallet — 5 images
     [
       "https://static.markaz.app/pakistan/products/1990-147-732160-product-1991.webp",
       "https://static.markaz.app/pakistan/products/1990-147-732160-product-1992.webp",
@@ -1925,35 +1782,80 @@ const IMG = {
       "https://static.markaz.app/pakistan/products/1990-147-732160-product-1994.webp",
       "https://static.markaz.app/pakistan/products/1990-147-732160-product-1996.webp"
     ],
-    // Product 3-30: Filhaal single Unsplash images (baad mein aap real bhejenge)
-    ["https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1620109176813-e91290f6c795?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1594938291221-94f18cbb5660?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1624222247344-550fb60583dc?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1620109176813-e91290f6c795?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1618886614638-80e3c103d31a?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1594938291221-94f18cbb5660?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1618886614638-80e3c103d31a?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1594938291221-94f18cbb5660?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1622445275576-721325763afe?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=800&q=85"]
+    // 3. Men's Unstitched Suit Black Wash & Wear — 2 images
+    [
+      "https://static.markaz.app/pakistan/products/106-70-460312-product-2.jpg",
+      "https://static.markaz.app/pakistan/products/106-70-460312-product-1-withcode.jpg"
+    ],
+    // 4. Men's Watch — 5 images
+    [
+      "https://static.markaz.app/pakistan/products/268-132-732509-product-1.webp",
+      "https://static.markaz.app/pakistan/products/268-132-732509-product-2.webp",
+      "https://static.markaz.app/pakistan/products/268-132-732509-product-3.webp",
+      "https://static.markaz.app/pakistan/products/268-132-732509-product-4.webp",
+      "https://static.markaz.app/pakistan/products/268-132-732509-product-5.webp"
+    ],
+    // 5. Men's Unstitched Wash & Wear Plain Suit — 1 image
+    [
+      "https://static.markaz.app/pakistan/products/1492-70-734136-product-1.webp"
+    ],
+    // 6. Men's Brown Rubber Wallet — 3 images
+    [
+      "https://static.markaz.app/pakistan/products/1990-147-712062-product-2.webp",
+      "https://static.markaz.app/pakistan/products/1990-147-712062-product-3.webp",
+      "https://static.markaz.app/pakistan/products/1990-147-712062-product-4.webp"
+    ],
+    // 7. Men's Baleabaly Leather Wallet 2 Pcs — 7 images
+    [
+      "https://static.markaz.app/pakistan/products/1010-147-665581-product-1.webp",
+      "https://static.markaz.app/pakistan/products/1010-147-665581-product-2.webp",
+      "https://static.markaz.app/pakistan/products/1010-147-665581-product-7.webp",
+      "https://static.markaz.app/pakistan/products/1010-147-665581-product-8.webp",
+      "https://static.markaz.app/pakistan/products/1010-147-665581-product-9.webp",
+      "https://static.markaz.app/pakistan/products/1010-147-665581-product-10.webp",
+      "https://static.markaz.app/pakistan/products/1010-147-665581-product-11.webp"
+    ],
+    // 8. J.Wash N Wear Suit Blue Premium — 1 image
+    [
+      "https://static.markaz.app/pakistan/products/1303-70-688608-product-1.webp"
+    ],
+    // 9. Unisex Watch — 4 images
+    [
+      "https://static.markaz.app/pakistan/products/268-132-732510-product-2.webp",
+      "https://static.markaz.app/pakistan/products/268-132-732510-product-3.webp",
+      "https://static.markaz.app/pakistan/products/268-132-732510-product-4.webp",
+      "https://static.markaz.app/pakistan/products/268-132-732510-product-5.webp"
+    ],
+    // 10. Black Leather Wallet Zipper Closure — 4 images
+    [
+      "https://static.markaz.app/pakistan/products/1156-147-529067-product-1.jpeg",
+      "https://static.markaz.app/pakistan/products/1156-147-529067-product-2.jpeg",
+      "https://static.markaz.app/pakistan/products/1156-147-529067-product-3.jpeg",
+      "https://static.markaz.app/pakistan/products/1156-147-529067-product-1-withcode.jpeg"
+    ],
+    // 11. Men's Embossed Bird Leather Wallet Brown — 5 images
+    [
+      "https://static.markaz.app/pakistan/products/1156-147-629203-product-1.jpeg",
+      "https://static.markaz.app/pakistan/products/1156-147-629203-product-2.jpeg",
+      "https://static.markaz.app/pakistan/products/1156-147-629203-product-3.jpeg",
+      "https://static.markaz.app/pakistan/products/1156-147-629203-product-7.jpeg",
+      "https://static.markaz.app/pakistan/products/1156-147-629203-product-8.jpeg"
+    ],
+    // 12. Boski Black Suit with 8 Buttons — 2 images
+    [
+      "https://static.markaz.app/pakistan/products/124-18-569792-product-1.jpg",
+      "https://static.markaz.app/pakistan/products/124-18-569792-product-2.jpg"
+    ],
+    // 13. J. Men's Wear Boski Plain Suit — 2 images
+    [
+      "https://static.markaz.app/pakistan/products/1473-18-592701-product-1.jpeg",
+      "https://static.markaz.app/pakistan/products/1473-18-592701-product-2.jpeg"
+    ],
+    // 14-30: Filhaal Unsplash fallback
+    [FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],
+    [FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],
+    [FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],[FALLBACK_IMG],
+    [FALLBACK_IMG],[FALLBACK_IMG]
   ],
   women: [
     ["https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=85"],
@@ -2006,8 +1908,6 @@ const IMG = {
     ["https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=85"],
     ["https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?auto=format&fit=crop&w=800&q=85"],
     ["https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1615397587228-4a4e5c5c5c5c?auto=format&fit=crop&w=800&q=85"],
-    ["https://images.unsplash.com/photo-1622290319146-7b8c3d3c5c5c?auto=format&fit=crop&w=800&q=85"],
     ["https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=800&q=85"]
   ]
 };
@@ -2016,20 +1916,20 @@ const PRODUCTS = {
   men: [
     { name:"Men's Unstitched Khaddar Suit Tan 4.5M", brand:"Executive", price:3499, oldPrice:4999 },
     { name:"Balenberry Long Wallet Men's Leather Wallet", brand:"Premium", price:1899, oldPrice:2650 },
-    { name:"Mens Unstitched Suit Black Wash & Wear", brand:"Executive", price:2499, oldPrice:3500 },
-    { name:"Classic Men's Analogue Watch", brand:"Luxury", price:2499, oldPrice:3500 },
-    { name:"Men's Unstitched Wash And Wear Plain Suit", brand:"Executive", price:3299, oldPrice:4600 },
-    { name:"Men's Brown Rubber Wallet Monogrammed", brand:"Classic", price:1599, oldPrice:2250 },
+    { name:"Men's Unstitched Suit Black Wash & Wear", brand:"Executive", price:2499, oldPrice:3500 },
+    { name:"Men's Classic Analogue Watch", brand:"Luxury", price:2499, oldPrice:3500 },
+    { name:"Men's Unstitched Wash & Wear Plain Suit", brand:"Executive", price:3499, oldPrice:4900 },
+    { name:"Men's Brown Rubber Wallet — Monogrammed", brand:"Classic", price:1599, oldPrice:2250 },
     { name:"Men's Baleabaly Leather Wallet 2 Pcs", brand:"Classic", price:1499, oldPrice:2100 },
-    { name:"J.Wash N Wear Suit Blue Premium", brand:"Luxury", price:3699, oldPrice:5200 },
-    { name:"Unisex Classic Watch Stainless", brand:"Premium", price:2199, oldPrice:3100 },
-    { name:"Black Leather Wallet Zipper Closure", brand:"Classic", price:1599, oldPrice:2250 },
-    { name:"Men's Leather Wallet With Free Pack", brand:"Premium", price:2299, oldPrice:3200 },
-    { name:"Men's Embossed Bird Leather Wallet Brown", brand:"Classic", price:1199, oldPrice:1700 },
+    { name:"J.Wash N Wear Premium Suit — Blue", brand:"Luxury", price:3699, oldPrice:5200 },
+    { name:"Unisex Classic Watch — Stainless Steel", brand:"Premium", price:2199, oldPrice:3100 },
+    { name:"Black Leather Wallet — Zipper Closure", brand:"Classic", price:1599, oldPrice:2250 },
+    { name:"Men's Embossed Bird Leather Wallet — Brown", brand:"Classic", price:1199, oldPrice:1700 },
     { name:"Boski Black Suit with 8 Buttons", brand:"Executive", price:3299, oldPrice:4600 },
+    { name:"J. Men's Wear Boski Plain Suit", brand:"Executive", price:2799, oldPrice:3900 },
     { name:"Men's Leather Wallet Grey Monogrammed", brand:"Classic", price:1199, oldPrice:1700 },
     { name:"J.Wash N Wear Plain Suit Brown 4m", brand:"Luxury", price:3699, oldPrice:5200 },
-    { name:"J. Men's Wear Boski Plain Suit", brand:"Executive", price:2799, oldPrice:3900 },
+    { name:"Men's Executive Formal Shirt", brand:"Executive", price:2799, oldPrice:3900 },
     { name:"Men's Leather Wallet Slim Design", brand:"Classic", price:1599, oldPrice:2250 },
     { name:"Boski Wash & Wear Suit Pink", brand:"Premium", price:2999, oldPrice:4200 },
     { name:"J. Men's Boski Plain Suit Green", brand:"Executive", price:2499, oldPrice:3500 },
@@ -2105,7 +2005,7 @@ const PRODUCTS = {
    UTILITIES
    ============================================ */
 const formatPrice = n => 'Rs. ' + n.toLocaleString('en-PK');
-const scrollTo = sel => {
+const smoothScrollTo = sel => {
   const el = document.querySelector(sel);
   if(!el) return;
   const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
@@ -2115,7 +2015,7 @@ const openMobileNav = () => document.getElementById('mobileNav').classList.add('
 const closeMobileNav = () => document.getElementById('mobileNav').classList.remove('open');
 
 /* ============================================
-   RENDER PRODUCTS — WITH IMAGE SLIDER
+   RENDER PRODUCTS
    ============================================ */
 function productHTML(p, cat, imgs, i, showNew){
   const off = Math.round(((p.oldPrice - p.price)/p.oldPrice)*100);
@@ -2124,7 +2024,7 @@ function productHTML(p, cat, imgs, i, showNew){
 
   const slidesHTML = imgArr.map((img, idx) => `
     <div class="slide ${idx===0?'active':''}">
-      <img src="${img}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85'">
+      <img src="${img}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
     </div>
   `).join('');
 
@@ -2147,9 +2047,7 @@ function productHTML(p, cat, imgs, i, showNew){
           ${off >= 25 ? '<span class="pill sale">-'+off+'%</span>' : ''}
         </div>
         <button class="pcard-wish" onclick="toggleWish(this,event)" aria-label="Wishlist">♡</button>
-        <div class="pcard-slider">
-          ${slidesHTML}
-        </div>
+        <div class="pcard-slider">${slidesHTML}</div>
         ${dotsHTML}
         ${arrowsHTML}
         <button class="pcard-quick" onclick="openModal(${i},'${cat}')">Quick View</button>
@@ -2165,7 +2063,6 @@ function productHTML(p, cat, imgs, i, showNew){
   `;
 }
 
-/* Slider controls */
 function goSlide(btn, idx){
   const slider = btn.closest('.pcard-img').querySelector('.pcard-slider');
   const slides = slider.querySelectorAll('.slide');
@@ -2178,16 +2075,14 @@ function nextSlide(btn){
   const slides = slider.querySelectorAll('.slide');
   let activeIdx = 0;
   slides.forEach((s,i) => { if(s.classList.contains('active')) activeIdx = i; });
-  const next = (activeIdx + 1) % slides.length;
-  goSlide(btn, next);
+  goSlide(btn, (activeIdx + 1) % slides.length);
 }
 function prevSlide(btn){
   const slider = btn.closest('.pcard-img').querySelector('.pcard-slider');
   const slides = slider.querySelectorAll('.slide');
   let activeIdx = 0;
   slides.forEach((s,i) => { if(s.classList.contains('active')) activeIdx = i; });
-  const prev = (activeIdx - 1 + slides.length) % slides.length;
-  goSlide(btn, prev);
+  goSlide(btn, (activeIdx - 1 + slides.length) % slides.length);
 }
 
 function renderAll(){
@@ -2227,9 +2122,7 @@ function toggleWish(btn, e){
 let cart = [];
 const CART_STORAGE_KEY = 'tanu_cart_v1';
 
-function saveCart(){
-  try{ localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); }catch(e){}
-}
+function saveCart(){ try{ localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); }catch(e){} }
 function loadCart(){
   try{
     const raw = localStorage.getItem(CART_STORAGE_KEY);
@@ -2264,12 +2157,7 @@ function updateCart(){
   const checkout = document.getElementById('checkoutBtn');
 
   if(count === 0){
-    body.innerHTML = `
-      <div class="cart-empty">
-        <span class="ico">🛍</span>
-        <h4>Your cart is empty</h4>
-        <p>Start shopping to add items</p>
-      </div>`;
+    body.innerHTML = `<div class="cart-empty"><span class="ico">🛍</span><h4>Your cart is empty</h4><p>Start shopping to add items</p></div>`;
     subtotalEl.textContent = 'Rs. 0';
     shippingEl.textContent = '—';
     totalEl.textContent = 'Rs. 0';
@@ -2282,7 +2170,7 @@ function updateCart(){
     subtotal += it.price;
     return `
       <div class="cart-line">
-        <img src="${it.img}" alt="${it.name}">
+        <img src="${it.img}" alt="${it.name}" onerror="this.src='${FALLBACK_IMG}'">
         <div class="info">
           <div class="name">${it.name}</div>
           ${it.size ? '<div class="size">Size '+it.size+'</div>' : ''}
@@ -2322,7 +2210,7 @@ function closeCart(){
 }
 
 /* ============================================
-   PRODUCT MODAL — WITH MULTI-IMAGE SLIDER
+   PRODUCT MODAL
    ============================================ */
 let currentProduct = null;
 let currentSize = '';
@@ -2340,19 +2228,17 @@ function openModal(index, cat){
 
   const off = Math.round(((p.oldPrice - p.price)/p.oldPrice)*100);
 
-  // Build slider
   const slider = document.getElementById('modalSlider');
   slider.innerHTML = imgArr.map((img, i) => `
     <div class="mslide ${i===0?'active':''}">
-      <img src="${img}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85'">
+      <img src="${img}" alt="${p.name}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
     </div>
   `).join('');
 
-  // Build thumbnails
   const thumbs = document.getElementById('modalThumbs');
   thumbs.innerHTML = imgArr.map((img, i) => `
     <button class="${i===0?'active':''}" onclick="setModalSlide(${i})">
-      <img src="${img}" alt="Thumbnail ${i+1}">
+      <img src="${img}" alt="Thumbnail ${i+1}" onerror="this.src='${FALLBACK_IMG}'">
     </button>
   `).join('');
 
@@ -2385,7 +2271,6 @@ function setModalSlide(idx){
   modalActiveIdx = idx;
   document.querySelectorAll('#modalSlider .mslide').forEach((s,i) => s.classList.toggle('active', i===idx));
   document.querySelectorAll('#modalThumbs button').forEach((b,i) => b.classList.toggle('active', i===idx));
-  // Update current product image for cart
   currentProduct.img = modalImages[idx];
 }
 
@@ -2470,7 +2355,7 @@ function doSearch(){
 
   res.innerHTML = found.slice(0,12).map(p => `
     <div class="search-row" onclick="closeSearch(); openModal(${p.index},'${p.cat}')">
-      <img src="${p.img}" alt="${p.name}">
+      <img src="${p.img}" alt="${p.name}" onerror="this.src='${FALLBACK_IMG}'">
       <div class="info">
         <div class="name">${p.name}</div>
         <div class="meta">${p.cat.charAt(0).toUpperCase()+p.cat.slice(1)} · ${p.brand}</div>
@@ -2492,9 +2377,6 @@ function toast(msg){
   toastT = setTimeout(()=>el.classList.remove('show'), 2600);
 }
 
-/* ============================================
-   NEWSLETTER
-   ============================================ */
 function subscribe(e){
   e.preventDefault();
   toast('✓ Thank you for subscribing!');
@@ -2513,7 +2395,7 @@ window.addEventListener('scroll', ()=>{
   const h = document.documentElement;
   const scrollTop = h.scrollTop || document.body.scrollTop;
   const scrollHeight = h.scrollHeight - h.clientHeight;
-  const pct = (scrollTop / scrollHeight) * 100;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
 
   if(window.scrollY > 400) st.classList.add('show'); else st.classList.remove('show');
   if(window.scrollY > 40) hd.classList.add('scrolled'); else hd.classList.remove('scrolled');
@@ -2526,9 +2408,7 @@ const io = new IntersectionObserver(entries=>{
 }, { threshold:.12, rootMargin:'0px 0px -60px 0px' });
 document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>io.observe(el));
 
-/* ============================================
-   COUNTDOWN
-   ============================================ */
+/* COUNTDOWN */
 (function countdown(){
   const end = new Date();
   end.setDate(end.getDate() + 2);
@@ -2552,9 +2432,7 @@ document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>io.observe(
   setInterval(tick, 1000);
 })();
 
-/* ============================================
-   GLOBAL EVENTS
-   ============================================ */
+/* GLOBAL EVENTS */
 document.getElementById('modalOv').addEventListener('click', e=>{
   if(e.target.id === 'modalOv') closeModal();
 });
@@ -2571,18 +2449,14 @@ document.addEventListener('keydown', e=>{
   }
 });
 
-/* ============================================
-   PRELOADER
-   ============================================ */
+/* PRELOADER */
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
     document.getElementById('preloader').classList.add('done');
   }, 900);
 });
 
-/* ============================================
-   INIT
-   ============================================ */
+/* INIT */
 document.getElementById('year').textContent = new Date().getFullYear();
 loadCart();
 renderAll();
