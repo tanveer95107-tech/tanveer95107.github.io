@@ -1814,35 +1814,40 @@ input,select,textarea{font-family:inherit}
 
 <script>
 /* ============================================
-   PRODUCT DATA
+   IMAGE ARRAY — SIRF IMAGE URLs
    ============================================ */
 const IMG = {
   men: [
-    "https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1620109176813-e91290f6c795?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1624222247344-550fb60583dc?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1620109176813-e91290f6c795?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1618886614638-80e3c103d31a?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1610652492500-ded49ceeb378?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1618886614638-80e3c103d31a?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=85",
+    "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=800&q=85",
     "https://images.unsplash.com/photo-1622445275576-721325763afe?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1607345366928-199ea26cfe3e?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1626497764746-6dc36546b388?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1608063615781-e2ef8c73d114?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=800&q=85",
-    "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=85"
+    "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=800&q=85"
   ],
   women: [
     "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=85",
@@ -1901,33 +1906,41 @@ const IMG = {
   ]
 };
 
+/* ============================================
+   PRODUCTS ARRAY — SIRF PRODUCT DATA
+   ============================================ */
 const PRODUCTS = {
   men: [
-    { name:"Premium Formal Dress Shirt", brand:"Executive", price:3499, oldPrice:4999 },
-    { name:"Classic Slim Fit Suit", brand:"Luxury", price:12999, oldPrice:17999 },
-    { name:"Urban Leather Jacket", brand:"Premium", price:8999, oldPrice:12999 },
-    { name:"Designer Casual Blazer", brand:"Luxury", price:7499, oldPrice:9999 },
-    { name:"Wool Overcoat", brand:"Executive", price:10999, oldPrice:14999 },
-    { name:"Casual Denim Jacket", brand:"Premium", price:5499, oldPrice:7499 },
-    { name:"Slim Fit Chino Pants", brand:"Essential", price:2499, oldPrice:3499 },
-    { name:"Premium Polo Shirt", brand:"Classic", price:1999, oldPrice:2999 },
-    { name:"Formal Dress Trousers", brand:"Executive", price:3499, oldPrice:4999 },
-    { name:"Casual Linen Shirt", brand:"Premium", price:2799, oldPrice:3999 },
-    { name:"Wool Blend Blazer", brand:"Luxury", price:8499, oldPrice:11999 },
-    { name:"Cotton Crew Neck Tee", brand:"Essential", price:1299, oldPrice:1999 },
-    { name:"Premium Denim Jeans", brand:"Classic", price:3999, oldPrice:5499 },
-    { name:"Sports Track Jacket", brand:"Active", price:4499, oldPrice:5999 },
-    { name:"Formal Waistcoat", brand:"Executive", price:3999, oldPrice:5499 },
-    { name:"Casual Cargo Shorts", brand:"Essential", price:1799, oldPrice:2499 },
-    { name:"Premium Pullover Hoodie", brand:"Premium", price:3499, oldPrice:4999 },
-    { name:"Formal Silk Tie", brand:"Luxury", price:1499, oldPrice:1999 },
-    { name:"Leather Belt Premium", brand:"Classic", price:1999, oldPrice:2999 },
-    { name:"Casual Sneakers", brand:"Active", price:4999, oldPrice:6999 },
-    { name:"Woolen Sweater", brand:"Premium", price:2999, oldPrice:4499 },
-    { name:"Formal Leather Shoes", brand:"Luxury", price:6999, oldPrice:9999 },
-    { name:"Premium Casual Flip Flops", brand:"Essential", price:999, oldPrice:1499 },
-    { name:"Luxury Wrist Watch", brand:"Luxury", price:8999, oldPrice:12999 },
-    { name:"Travel Backpack", brand:"Active", price:3999, oldPrice:5499 }
+    { name:"Premium Unstitched Khaddar Suit — Tan", brand:"Executive", price:2999, oldPrice:4200 },
+    { name:"Balenberry Long Leather Wallet — Men's", brand:"Premium", price:1899, oldPrice:2650 },
+    { name:"Premium Unstitched Suit — Black Wash & Wear", brand:"Executive", price:2499, oldPrice:3500 },
+    { name:"Classic Men's Analogue Watch — Leather Strap", brand:"Luxury", price:2499, oldPrice:3500 },
+    { name:"Unstitched Wash & Wear Plain Suit — Premium", brand:"Executive", price:3299, oldPrice:4600 },
+    { name:"Brown Rubber Wallet — Monogrammed", brand:"Classic", price:1599, oldPrice:2250 },
+    { name:"Baleabaly Leather Wallet 2 Pcs Set", brand:"Classic", price:1499, oldPrice:2100 },
+    { name:"J.Wash N Wear Premium Suit — Blue", brand:"Luxury", price:3699, oldPrice:5200 },
+    { name:"Unisex Classic Watch — Stainless", brand:"Premium", price:2199, oldPrice:3100 },
+    { name:"Black Leather Wallet — Zipper Closure", brand:"Classic", price:1599, oldPrice:2250 },
+    { name:"Men's Leather Wallet With Free Card Pack", brand:"Premium", price:2299, oldPrice:3200 },
+    { name:"Embossed Bird Leather Wallet — Brown", brand:"Classic", price:1199, oldPrice:1700 },
+    { name:"Boski Black Suit with 8 Buttons — Premium", brand:"Executive", price:3299, oldPrice:4600 },
+    { name:"Leather Wallet — Grey Monogrammed", brand:"Classic", price:1199, oldPrice:1700 },
+    { name:"J.Wash N Wear Plain Suit — Brown 4m", brand:"Luxury", price:3699, oldPrice:5200 },
+    { name:"Premium Boski Plain Suit — Men's Executive", brand:"Executive", price:2799, oldPrice:3900 },
+    { name:"Men's Leather Wallet — Slim Design", brand:"Classic", price:1599, oldPrice:2250 },
+    { name:"Boski Wash & Wear Suit — Pink", brand:"Premium", price:2999, oldPrice:4200 },
+    { name:"J. Boski Plain Suit Green — 8 Buttons", brand:"Executive", price:2499, oldPrice:3500 },
+    { name:"Boski Plain Suit — Summer Wear Premium", brand:"Premium", price:2599, oldPrice:3650 },
+    { name:"Men's Leather Wallet — Premium Craft", brand:"Classic", price:1899, oldPrice:2650 },
+    { name:"Premium Boski Plain Brown Suit — Men's", brand:"Executive", price:2799, oldPrice:3900 },
+    { name:"Premium Green Wash & Wear Suit", brand:"Premium", price:2999, oldPrice:4200 },
+    { name:"1 Pc Cotton Plain Polo Shirt — Men's", brand:"Essential", price:1349, oldPrice:1900 },
+    { name:"Peach Hard Cotton Suit — 8 Buttons", brand:"Premium", price:2499, oldPrice:3500 },
+    { name:"Premium 3-in-1 Brown Leather Wallet", brand:"Classic", price:1899, oldPrice:2650 },
+    { name:"Premium Blue Boski Plain Suit — Men's", brand:"Executive", price:2799, oldPrice:3900 },
+    { name:"Junaid Jamshaid Black Unstitched Suit", brand:"Luxury", price:3699, oldPrice:5200 },
+    { name:"White Wash & Wear Suit — 8 Buttons", brand:"Premium", price:2999, oldPrice:4200 },
+    { name:"Classic Analogue Watch — Leather Strap", brand:"Luxury", price:2199, oldPrice:3100 }
   ],
   women: [
     { name:"Elegant Evening Gown", brand:"Luxury", price:7499, oldPrice:9999 },
@@ -2191,14 +2204,10 @@ function openModal(index, cat){
   document.getElementById('modalOv').classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  /* Update mobile sticky CTA */
   const cta = document.getElementById('mobileCta');
   document.getElementById('mcName').textContent = p.name;
   document.getElementById('mcPrice').textContent = formatPrice(p.price);
   cta.classList.add('open');
-
-  /* Recently viewed */
-  saveRecentlyViewed(p, cat, img);
 }
 
 function pickSize(btn, size){
@@ -2240,20 +2249,6 @@ function closeModal(){
    ============================================ */
 function openSizeGuide(){ document.getElementById('sgModal').classList.add('open'); }
 function closeSizeGuide(){ document.getElementById('sgModal').classList.remove('open'); }
-
-/* ============================================
-   RECENTLY VIEWED
-   ============================================ */
-const RV_KEY = 'tanu_recently_viewed';
-function saveRecentlyViewed(p, cat, img){
-  try{
-    let rv = JSON.parse(localStorage.getItem(RV_KEY) || '[]');
-    rv = rv.filter(x => !(x.name === p.name && x.cat === cat));
-    rv.unshift({ name:p.name, cat, img, price:p.price, oldPrice:p.oldPrice, brand:p.brand });
-    rv = rv.slice(0, 8);
-    localStorage.setItem(RV_KEY, JSON.stringify(rv));
-  }catch(e){}
-}
 
 /* ============================================
    SEARCH
