@@ -4413,7 +4413,7 @@ function renderAll(){
   ).join('');
 }
  
-}
+
 
 /* ============================================
    WISHLIST
@@ -4581,7 +4581,7 @@ function openModal(index, cat){
   document.getElementById('mWish').textContent = '♡';
 
   document.getElementById('modalOv').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockScroll();
 
   const cta = document.getElementById('mobileCta');
   document.getElementById('mcName').textContent = p.name;
