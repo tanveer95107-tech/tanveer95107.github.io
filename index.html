@@ -60,12 +60,12 @@ iframe {
   --ink-3: #1d1d22;
   --gold: #c9a961;
   --gold-2: #e6c98a;
-  --gold-3: #8e7638;
+  --gold-3: #82692e;
   --gold-glow: rgba(201, 169, 97, .35);
   --cream: #fbf9f4;
   --cream-2: #f3efe6;
   --white: #ffffff;
-  --muted: #7c7c85;
+  --muted:  #6b6b74;
   --line: #e9e4d8;
   --danger: #c1272d;
   --success: #1a7f4b;
@@ -3543,7 +3543,9 @@ textarea {
 @media (max-width: 900px) {
   html,
   body {
-    overflow-x: clip;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
   }
   .hero,
   .hero-inner,
@@ -3557,7 +3559,7 @@ textarea {
   .container,
   .founder-inner,
   .foot-inner {
-    max-width: 100vw;
+    max-width: 100%;
     overflow-x: hidden;
   }
 }
@@ -4402,13 +4404,15 @@ function renderAll(){
 
   const newGrid = document.getElementById('newGrid');
   const items = [
-    ...PRODUCTS.men.slice(0,3).map((p,i)=>({p,cat:'men',imgs:IMG.men[i]})),
-    ...PRODUCTS.women.slice(0,3).map((p,i)=>({p,cat:'women',imgs:IMG.women[i]})),
-    ...PRODUCTS.kids.slice(0,2).map((p,i)=>({p,cat:'kids',imgs:IMG.kids[i]}))
+    ...PRODUCTS.men.slice(0,3).map((p,i)=>({p,cat:'men',imgs:IMG.men[i],idx:i})),
+    ...PRODUCTS.women.slice(0,3).map((p,i)=>({p,cat:'women',imgs:IMG.women[i],idx:i})),
+    ...PRODUCTS.kids.slice(0,2).map((p,i)=>({p,cat:'kids',imgs:IMG.kids[i],idx:i}))
   ];
-  newGrid.innerHTML = items.map((it,i) =>
-    productHTML(it.p, it.cat, it.imgs, i, true)
+  newGrid.innerHTML = items.map(it =>
+    productHTML(it.p, it.cat, it.imgs, it.idx, true)
   ).join('');
+}
+ 
 }
 
 /* ============================================
@@ -4419,6 +4423,19 @@ function toggleWish(btn, e){
   btn.classList.toggle('active');
   btn.textContent = btn.classList.contains('active') ? '♥' : '♡';
   toast(btn.classList.contains('active') ? '✓ Added to wishlist' : 'Removed from wishlist');
+}
+
+   /* ============================================
+   SCROLL LOCK — Fix
+   ============================================ */
+let scrollLockCount = 0;
+function lockScroll(){
+  scrollLockCount++;
+  document.body.style.overflow = 'hidden';
+}
+function unlockScroll(){
+  scrollLockCount = Math.max(0, scrollLockCount - 1);
+  if(scrollLockCount === 0) document.body.style.overflow = '';
 }
 
 /* ============================================
@@ -4506,12 +4523,12 @@ function updateCart(){
 function openCart(){
   document.getElementById('cartDrawer').classList.add('open');
   document.getElementById('drawerOv').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockScroll();
 }
 function closeCart(){
   document.getElementById('cartDrawer').classList.remove('open');
   document.getElementById('drawerOv').classList.remove('open');
-  document.body.style.overflow = '';
+  unlockScroll();
 }
 
 /* ============================================
@@ -4610,9 +4627,10 @@ function addFromMobileCta(){
 function closeModal(){
   document.getElementById('modalOv').classList.remove('open');
   document.getElementById('mobileCta').classList.remove('open');
-  document.body.style.overflow = '';
+  unlockScroll();
+  currentProduct = null;
+  currentSize = '';
 }
-
 function openSizeGuide(){ document.getElementById('sgModal').classList.add('open'); }
 function closeSizeGuide(){ document.getElementById('sgModal').classList.remove('open'); }
 
@@ -4621,12 +4639,12 @@ function closeSizeGuide(){ document.getElementById('sgModal').classList.remove('
    ============================================ */
 function openSearch(){
   document.getElementById('searchOv').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockScroll();
   setTimeout(()=>document.getElementById('searchInput').focus(), 100);
 }
 function closeSearch(){
   document.getElementById('searchOv').classList.remove('open');
-  document.body.style.overflow = '';
+   unlockScroll();
   document.getElementById('searchInput').value = '';
   document.getElementById('searchResults').innerHTML = '';
 }
