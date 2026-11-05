@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose'); // Database ke liye
@@ -7,7 +6,7 @@ require('dotenv').config(); // Link read karne ke liye
 const app = express();
 const port = process.env.PORT || 3000;
 
-// SECURITY: Sirf aapki website ko ijazat hai
+// SECURITY: Sirf aapki website ko data lene ki ijazat hai
 app.use(cors({
   origin: ['https://tanveer95107-tech.github.io', 'http://localhost:3000']
 }));
