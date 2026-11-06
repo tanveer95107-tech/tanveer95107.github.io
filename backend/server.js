@@ -20,7 +20,10 @@ const Product = mongoose.model('Product', new mongoose.Schema({
   price: Number,
   oldPrice: Number,
   stock: { type: Number, default: 10 },
-  images: [String]
+  images: [String],
+  // NAYA: Sizes aur Colors database mein save karne ke liye
+  sizes: [String], 
+  colors: [String] 
 }));
 
 // 1. Routes
