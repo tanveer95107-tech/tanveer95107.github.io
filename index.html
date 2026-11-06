@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>a
    <meta charset="UTF-8"><meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tanu Store | Luxury Fashion for Men, Women & Kids</title>
@@ -4105,7 +4105,9 @@ textarea {
 /* ============================================
    PRODUCT DATA (Hidden - Ab data database se aayega)
    ============================================ */
-/*
+// NAYA CODE (Security ke liye)
+const escapeHTML = str => String(str || '').replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+   /*
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85";
 
 const IMG = {
@@ -4173,8 +4175,8 @@ function productHTML(p, cat, i, showNew){
         ${arrowsHTML}
         <button class="pcard-quick" onclick="openModal(${i},'${cat}')">Quick View</button>
       </div>
-      <div class="pcard-brand">${p.brand}</div>
-      <h3 class="pcard-name">${p.name}</h3>
+            <div class="pcard-brand">${escapeHTML(p.brand)}</div>
+      <h3 class="pcard-name">${escapeHTML(p.name)}</h3>
       <div class="pcard-price">
         <span class="now">${formatPrice(p.price)}</span>
         <span class="was">${formatPrice(p.oldPrice)}</span>
@@ -4347,7 +4349,7 @@ function updateCart(){
 
   let msg = 'Hello Tanu Store! I would like to order:%0A%0A';
   cart.forEach((it, i) => {
-    msg += `${i+1}. ${it.name}${it.size?' (Size: '+it.size+')':''} — ${formatPrice(it.price)}%0A`;
+       msg += `${i+1}. ${encodeURIComponent(it.name)}${it.size?' (Size: '+it.size+')':''} — ${formatPrice(it.price)}%0A`;
   });
   msg += `%0ASubtotal: ${formatPrice(subtotal)}%0A`;
   msg += `Shipping: ${shipping===0?'Free':formatPrice(shipping)}%0A`;
