@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>a
+<head>
    <meta charset="UTF-8"><meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tanu Store | Luxury Fashion for Men, Women & Kids</title>
@@ -2617,8 +2617,8 @@ textarea {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  font-size: 18px; /* Icon size */
-  color: #dc3545; /* Red color */
+  font-size: 18px;
+  color: #dc3545;
   cursor: pointer;
   transition: var(--t);
   padding: 5px;
@@ -2629,10 +2629,6 @@ textarea {
 .cart-line .rm:hover {
   color: #a71d2a;
   transform: translateY(-50%) scale(1.1);
-}
-
-.cart-line .rm:hover {
-  color: var(--danger);
 }
 
 .cart-empty {
@@ -4319,7 +4315,7 @@ function removeFromCart(i){
 }
 
 function updateCart(){
-  const count = cart.length;
+  const count = cart.reduce((total, item) => total + (item.quantity || 1), 0);
   document.getElementById('cartCount').textContent = count;
   document.getElementById('cartCountLabel').textContent = count + (count===1?' item':' items');
 
@@ -4341,16 +4337,22 @@ function updateCart(){
 
   let subtotal = 0;
   body.innerHTML = cart.map((it, i) => {
-    subtotal += it.price;
+    const itemQty = it.quantity || 1;
+    const itemTotal = it.price * itemQty;
+    subtotal += itemTotal;
+    
     return `
       <div class="cart-line">
         <img src="${it.img}" alt="${it.name}" onerror="this.src='${FALLBACK_IMG}'">
         <div class="info">
           <div class="name">${it.name}</div>
-          ${it.size ? '<div class="size">Size '+it.size+'</div>' : ''}
-          <div class="price">${formatPrice(it.price)}</div>
+          ${it.size && it.size !== 'N/A' ? '<div class="size">Size: '+it.size+'</div>' : ''}
+          <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+            <div class="price">${formatPrice(it.price)}</div>
+            <div style="font-size: 13px; color: #666;">Qty: <b>${itemQty}</b></div>
+          </div>
         </div>
-        <button class="rm" onclick="removeFromCart(${i})">Remove</button>
+        <button class="rm" onclick="removeFromCart(${i})" title="Remove Item">🗑️</button>
       </div>
     `;
   }).join('');
@@ -4364,7 +4366,8 @@ function updateCart(){
 
   let msg = 'Hello Tanu Store! I would like to order:%0A%0A';
   cart.forEach((it, i) => {
-       msg += `${i+1}. ${encodeURIComponent(it.name)}${it.size?' (Size: '+it.size+')':''} — ${formatPrice(it.price)}%0A`;
+    const itemQty = it.quantity || 1;
+    msg += `${i+1}. ${encodeURIComponent(it.name)}${it.size && it.size !== 'N/A' ? ' (Size: '+it.size+')' : ''} — ${itemQty} x ${formatPrice(it.price)} = ${formatPrice(it.price * itemQty)}%0A`;
   });
   msg += `%0ASubtotal: ${formatPrice(subtotal)}%0A`;
   msg += `Shipping: ${shipping===0?'Free':formatPrice(shipping)}%0A`;
@@ -4520,7 +4523,6 @@ function closeModal(){
   currentProduct = null;
   currentSize = '';
 }
-   }
 
 // Quantity Change Function
 function changeQty(amount) {
