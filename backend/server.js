@@ -83,6 +83,29 @@ app.delete('/api/products/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Product update karne ka route (Admin only)
+app.put('/api/products/:id', async (req, res) => {
+  try {
+    const adminKey = req.headers['x-admin-key'];
+    if (adminKey !== process.env.ADMIN_KEY) {
+      return res.status(403).json({ error: 'Access Denied' });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true }
+    );
+    
+    if (!updatedProduct) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json({ message: 'Product Updated Successfully!', product: updatedProduct });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // 2. Database Se Connect Karke Server Start Karna
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
