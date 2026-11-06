@@ -4411,12 +4411,23 @@ function openModal(index, cat){
     ${off>0?'<span class="off">-'+off+'% OFF</span>':''}
   `;
 
-    // Database se Sizes uthana, agar na hon toh default dikhana
-  let sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : (cat === 'kids' ? ['2Y','4Y','6Y','8Y','10Y','12Y'] : ['XS','S','M','L','XL','XXL']);
-  
-  document.getElementById('mSizes').innerHTML = sizes.map(s =>
-    `<button class="size-btn" onclick="pickSize(this,'${s}')">${s}</button>`
-  ).join('');
+     // Size Check: Agar sizes khali hain, toh size ka option bilkul hide karein
+  const sizeSection = document.querySelector('.opt-head'); 
+  const sizeButtons = document.getElementById('mSizes');
+
+  if (!p.sizes || p.sizes.length === 0) {
+     
+      // Agar Admin Panel mein size nahi daala, toh sab kuch chhupa dein
+      sizeSection.style.display = 'none';
+      sizeButtons.innerHTML = '';
+      currentSize = 'N/A'; // Cart mein bina size ke add hone ke liye
+  } else {
+      // Agar sizes hain, toh dikhayein
+      sizeSection.style.display = 'flex';
+      sizeButtons.innerHTML = p.sizes.map(s =>
+        `<button class="size-btn" onclick="pickSize(this,'${s}')">${s}</button>`
+      ).join('');
+  }
 
   // Colors ko dikhana
   const oldColor = document.getElementById('mColors');
