@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Tanu Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f4f4f4; padding: 20px; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .container { width: 100%; max-width: 600px; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    h1 { color: #c9a961; text-align: center; margin-bottom: 25px; font-size: 24px; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #555; }
+    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; }
+    input:focus, select:focus, textarea:focus { border-color: #c9a961; outline: none; }
+    button { width: 100%; padding: 15px; background: #c9a961; color: #fff; border: none; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; transition: 0.3s; }
+    button:hover { background: #b08d4b; }
+    .msg { text-align: center; margin-top: 15px; font-weight: bold; display: none; padding: 10px; border-radius: 4px; }
+    .success { color: #155724; background: #d4edda; display: block; }
+    .error { color: #721c24; background: #f8d7da; display: block; }
+    hr { margin: 25px 0; border: 0; border-top: 1px solid #eee; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Tanu Store - Admin Panel</h1>
+    
+    <div class="form-group">
+        <label>Admin Password (Key):</label>
+        <input type="password" id="adminKey" placeholder="Enter your ADMIN_KEY">
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+        <label>Product Name:</label>
+        <input type="text" id="pName" placeholder="e.g., Men's Cotton Shirt">
+    </div>
+
+    <div class="form-group">
+        <label>Category:</label>
+        <select id="pCategory">
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+            <option value="kids">Kids</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Brand:</label>
+        <input type="text" id="pBrand" placeholder="e.g., Premium Brand">
+    </div>
+
+    <div style="display: flex; gap: 15px;">
+        <div class="form-group" style="flex: 1;">
+            <label>Price (Rs.):</label>
+            <input type="number" id="pPrice" placeholder="e.g., 2499">
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label>Old Price (Rs.):</label>
+            <input type="number" id="pOldPrice" placeholder="e.g., 3500">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Stock Quantity:</label>
+        <input type="number" id="pStock" value="10">
+    </div>
+
+    <div class="form-group">
+        <label>Image URLs (Comma separated for multiple images):</label>
+        <textarea id="pImages" rows="3" placeholder="https://link1.com/img1.jpg, https://link2.com/img2.jpg"></textarea>
+    </div>
+
+    <button onclick="addProduct()">Add Product to Website</button>
+    
+    <div id="message" class="msg"></div>
+</div>
+
+<script>
+    // Aapka Railway Backend URL
+    const API_URL = "https://tanveer95107githubio-production.up.railway.app/api/products";
+
+    async function addProduct() {
+        const adminKey = document.getElementById('adminKey').value.trim();
+        const msgDiv = document.getElementById('message');
+
+        // 1. Check if password is entered
+        if (!adminKey) {
+            msgDiv.textContent = "⚠️ Please enter the Admin Password first!";
+            msgDiv.className = "msg error";
+            return;
+        }
+
+        // 2. Get product data
+        const pName = document.getElementById('pName').value.trim();
+        const pCategory = document.getElementById('pCategory').value;
+        const pBrand = document.getElementById('pBrand').value.trim();
+        const pPrice = document.getElementById('pPrice').value;
+        const pOldPrice = document.getElementById('pOldPrice').value;
+        const pStock = document.getElementById('pStock').value;
+        const pImagesRaw = document.getElementById('pImages').value;
+
+        // 3. Validation
+        if (!pName || !pPrice) {
+            msgDiv.textContent = "⚠️ Product Name and Price are required!";
+            msgDiv.className = "msg error";
+            return;
+        }
+
+        // Process images (Split by comma and remove empty spaces)
+        const imagesArray = pImagesRaw.split(',').map(url => url.trim()).filter(url => url !== "");
+
+        // Prepare data object
+        const productData = {
+            name: pName,
+            category: pCategory,
+            brand: pBrand || "Tanu Store",
+            price: Number(pPrice),
+            oldPrice: Number(pOldPrice) || Number(pPrice),
+            stock: Number(pStock) || 10,
+            images: imagesArray
+        };
+
+        try {
+            msgDiv.textContent = "⏳ Adding product, please wait...";
+            msgDiv.className = "msg"; // Reset classes
+
+            // Send data to Railway Backend
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-key': adminKey // Security Key
+                },
+                body: JSON.stringify(productData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Success
+                msgDiv.textContent = "✓ Product Added Successfully! Check your website.";
+                msgDiv.className = "msg success";
+                
+                // Clear form fields except password
+                document.getElementById('pName').value = "";
+                document.getElementById('pBrand').value = "";
+                document.getElementById('pPrice').value = "";
+                document.getElementById('pOldPrice').value = "";
+                document.getElementById('pImages').value = "";
+            } else {
+                // Error from backend (e.g., wrong password)
+                msgDiv.textContent = "❌ Error: " + (data.error || "Incorrect Admin Key or Server issue.");
+                msgDiv.className = "msg error";
+            }
+        } catch (error) {
+            // Network Error
+            msgDiv.textContent = "❌ Network Error: Backend se connect nahi ho paya.";
+            msgDiv.className = "msg error";
+        }
+    }
+</script>
+
+</body>
+</html>
