@@ -64,7 +64,25 @@ app.post('/api/products', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Product delete karne ka route (Admin only)
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const adminKey = req.headers['x-admin-key'];
+    if (adminKey !== process.env.ADMIN_KEY) {
+      return res.status(403).json({ error: 'Access Denied: You are not the Admin!' });
+    }
 
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    
+    if (!deletedProduct) {
+      return res.status(404).json({ error: 'Product nahi mila!' });
+    }
+
+    res.json({ message: 'Product Deleted Successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // 2. Database Se Connect Karke Server Start Karna
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
