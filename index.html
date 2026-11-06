@@ -4206,31 +4206,31 @@ function prevSlide(btn){
   goSlide(btn, (activeIdx - 1 + slides.length) % slides.length);
 }
 
-// Function jo database se data layega
+// Global variable taake openModal aur doSearch isay access kar sakein
+window.dbProducts = { men: [], women: [], kids: [] };
+
 async function fetchProductsFromDB() {
     try {
         const response = await fetch('https://tanveer95107githubio-production.up.railway.app/api/products');
         const allProducts = await response.json();
         
-        // Database se aaye products ko categories mein divide karna
-        let dbProducts = { men: [], women: [], kids: [] };
         allProducts.forEach(product => {
-            if (dbProducts[product.category]) {
-                dbProducts[product.category].push(product);
+            if (window.dbProducts[product.category]) {
+                window.dbProducts[product.category].push(product);
             }
         });
 
-        renderAll(dbProducts);
+        renderAll();
     } catch (error) {
         console.error("Products load nahi ho paye:", error);
     }
 }
 
-function renderAll(dbProducts){
+function renderAll(){
   ['men','women','kids'].forEach(cat => {
     const grid = document.getElementById(cat+'Grid');
     if(grid){
-      grid.innerHTML = dbProducts[cat].map((p,i) =>
+      grid.innerHTML = window.dbProducts[cat].map((p,i) =>
         productHTML(p, cat, i, false)
       ).join('');
     }
@@ -4238,9 +4238,9 @@ function renderAll(dbProducts){
 
   const newGrid = document.getElementById('newGrid');
   const items = [
-    ...dbProducts.men.slice(0,3).map((p,i)=>({p,cat:'men',idx:i})),
-    ...dbProducts.women.slice(0,3).map((p,i)=>({p,cat:'women',idx:i})),
-    ...dbProducts.kids.slice(0,2).map((p,i)=>({p,cat:'kids',idx:i}))
+    ...window.dbProducts.men.slice(0,3).map((p,i)=>({p,cat:'men',idx:i})),
+    ...window.dbProducts.women.slice(0,3).map((p,i)=>({p,cat:'women',idx:i})),
+    ...window.dbProducts.kids.slice(0,2).map((p,i)=>({p,cat:'kids',idx:i}))
   ];
   if(newGrid) {
     newGrid.innerHTML = items.map(it =>
@@ -4249,7 +4249,6 @@ function renderAll(dbProducts){
   }
 }
  
-
 /* ============================================
    WISHLIST
    ============================================ */
@@ -4376,12 +4375,6 @@ let modalImages = [];
 let modalActiveIdx = 0;
 
 function openModal(index, cat){
-  // Search products in DOM (jab database se aayen hain)
-  // Hum pura data fetch karte hain ya global variable use karte hain
-  // Yahan humne render ke waqt ID assign nahi ki, isliye hum data fetch karte hain again (not recommended, but works for now)
-  // Behtar tareeqa: data ko global variable mein rakhein.
-  
-  // Wait: Data fetch hua tha, usko global variable mein rakhein!
   const p = window.dbProducts[cat][index];
   if(!p) return;
   
