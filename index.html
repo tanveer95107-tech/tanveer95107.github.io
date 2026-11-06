@@ -4063,6 +4063,15 @@ textarea {
       <div class="brand-line" id="mBrand"></div>
       <h2 id="mName"></h2>
       <div class="modal-price-row" id="mPrice"></div>
+             <!-- Quantity Selector -->
+      <div class="opt-head" style="margin-top: 15px;">
+        <span class="opt-label">Quantity</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+        <button class="size-btn" onclick="changeQty(-1)" style="width: 40px; height: 40px; font-size: 20px; font-weight: bold;">-</button>
+        <span id="mQty" style="font-size: 18px; font-weight: bold; min-width: 20px; text-align: center;">1</span>
+        <button class="size-btn" onclick="changeQty(1)" style="width: 40px; height: 40px; font-size: 20px; font-weight: bold;">+</button>
+      </div>
       <p class="desc">Premium branded style from the Tanu Store collection. Select your size and add to cart — order easily via WhatsApp.</p>
       <div class="opt-head">
         <span class="opt-label">Select Size</span>
@@ -4386,6 +4395,8 @@ function openModal(index, cat){
   modalActiveIdx = 0;
   currentProduct = { ...p, cat, img: imgArr[0], index };
   currentSize = '';
+     document.getElementById('mQty').textContent = '1'; // Har naye product par quantity 1 set karein
+  window.currentQuantity = 1; 
 
   const off = Math.round(((p.oldPrice - p.price)/p.oldPrice)*100);
 
@@ -4500,6 +4511,15 @@ function closeModal(){
   unlockScroll();
   currentProduct = null;
   currentSize = '';
+}
+   // Quantity Change Function
+function changeQty(amount) {
+    if (!window.currentQuantity) window.currentQuantity = 1;
+    let newQty = window.currentQuantity + amount;
+    if (newQty < 1) newQty = 1;
+    window.currentQuantity = newQty;
+    document.getElementById('mQty').textContent = newQty;
+}
 }
 function openSizeGuide(){ document.getElementById('sgModal').classList.add('open'); }
 function closeSizeGuide(){ document.getElementById('sgModal').classList.remove('open'); }
