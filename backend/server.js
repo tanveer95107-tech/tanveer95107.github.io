@@ -6,6 +6,7 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+// SECURITY: Sirf aapki website ko data lene ki ijazat hai
 app.use(cors({
   origin: ['https://tanveer95107-tech.github.io', 'http://localhost:3000']
 }));
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Tanu Store Backend Chal Raha Hai!' });
 });
 
+// Saare products nikalne ka route
 app.get('/api/products', async (req, res) => {
   try {
     const products = await Product.find();
@@ -36,8 +38,16 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+// Naya product ya multiple products add karne ka route (UPDATED)
 app.post('/api/products', async (req, res) => {
   try {
+    // Agar ek sath multiple products bheje gaye hain (Array)
+    if (Array.isArray(req.body)) {
+      const savedProducts = await Product.insertMany(req.body);
+      return res.status(201).json({ message: 'All Products Added!', count: savedProducts.length });
+    }
+    
+    // Agar sirf ek product hai
     const newProduct = new Product(req.body);
     await newProduct.save();
     res.status(201).json({ message: 'Product Added!', product: newProduct });
