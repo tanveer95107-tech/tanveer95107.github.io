@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 // SECURITY: Sirf aapki website ko data lene ki ijazat hai
 app.use(cors({
-  origin: ['https://tanveer95107-tech.github.io', 'http://localhost:3000']
+  origin: ['https://tanveer95107-tech.github.io', 'https://tanveer95107.github.io', 'http://localhost:3000']
 }));
 app.use(express.json());
 
@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 // Saare products nikalne ka route
 app.get('/api/products', async (req, res) => {
   try {
+    
     const products = await Product.find();
     res.json(products);
   } catch (err) {
@@ -41,6 +42,11 @@ app.get('/api/products', async (req, res) => {
 // Naya product ya multiple products add karne ka route (UPDATED)
 app.post('/api/products', async (req, res) => {
   try {
+      // Security Check: Sirf Admin hi product add kar sakta hai
+  const adminKey = req.headers['x-admin-key'];
+  if (adminKey !== process.env.ADMIN_KEY) {
+    return res.status(403).json({ error: 'Access Denied: You are not the Admin!' });
+  }
     // Agar ek sath multiple products bheje gaye hain (Array)
     if (Array.isArray(req.body)) {
       const savedProducts = await Product.insertMany(req.body);
