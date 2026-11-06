@@ -2614,15 +2614,21 @@ textarea {
 
 .cart-line .rm {
   position: absolute;
-  top: 18px;
+  top: 50%;
   right: 0;
-  font-size: 11px;
-  color: #a8a49b;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  text-decoration: underline;
-  transition: var(--t);
+  transform: translateY(-50%);
+  font-size: 18px; /* Icon size */
+  color: #dc3545; /* Red color */
   cursor: pointer;
+  transition: var(--t);
+  padding: 5px;
+  background: transparent;
+  border: none;
+}
+   
+.cart-line .rm:hover {
+  color: #a71d2a;
+  transform: translateY(-50%) scale(1.1);
 }
 
 .cart-line .rm:hover {
@@ -4489,12 +4495,15 @@ function toggleModalWish(btn){
 }
 
 function addFromModal(){
-  if(!currentSize){ toast('⚠ Please select a size'); return; }
+     if(!currentSize && !document.querySelector('.opt-head').style.display.includes('none')){ toast('⚠ Please select a size'); return; }
+  
   addToCart({
     name: currentProduct.name,
     price: currentProduct.price,
     img: currentProduct.img,
-    size: currentSize
+    size: currentSize,
+    quantity: window.currentQuantity || 1
+
   });
   closeModal();
 }
