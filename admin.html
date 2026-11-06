@@ -68,6 +68,8 @@
         <label>Stock Quantity:</label>
         <input type="number" id="pStock" value="10">
     </div>
+
+    <!-- Naye Sizes aur Colors ke boxes -->
     <div class="form-group">
         <label>Available Sizes (Comma separated):</label>
         <input type="text" id="pSizes" placeholder="e.g., S, M, L, XL ya 2Y, 3Y, 4Y">
@@ -77,6 +79,7 @@
         <label>Available Colors (Comma separated):</label>
         <input type="text" id="pColors" placeholder="e.g., Red, Black, Blue">
     </div>
+
     <div class="form-group">
         <label>Image URLs (Comma separated for multiple images):</label>
         <textarea id="pImages" rows="3" placeholder="https://link1.com/img1.jpg, https://link2.com/img2.jpg"></textarea>
@@ -95,34 +98,33 @@
         const adminKey = document.getElementById('adminKey').value.trim();
         const msgDiv = document.getElementById('message');
 
-        // 1. Check if password is entered
         if (!adminKey) {
             msgDiv.textContent = "⚠️ Please enter the Admin Password first!";
             msgDiv.className = "msg error";
             return;
         }
 
-        // 2. Get product data
+        // Data uthana (Ab Sizes aur Colors bhi shamil hain)
         const pName = document.getElementById('pName').value.trim();
         const pCategory = document.getElementById('pCategory').value;
         const pBrand = document.getElementById('pBrand').value.trim();
         const pPrice = document.getElementById('pPrice').value;
         const pOldPrice = document.getElementById('pOldPrice').value;
         const pStock = document.getElementById('pStock').value;
+        const pSizes = document.getElementById('pSizes').value; // Naya
+        const pColors = document.getElementById('pColors').value; // Naya
         const pImagesRaw = document.getElementById('pImages').value;
-       
 
-        // 3. Validation
         if (!pName || !pPrice) {
             msgDiv.textContent = "⚠️ Product Name and Price are required!";
             msgDiv.className = "msg error";
             return;
         }
 
-        // Process images (Split by comma and remove empty spaces)
+        // Images process karna
         const imagesArray = pImagesRaw.split(',').map(url => url.trim()).filter(url => url !== "");
 
-        // Prepare data object
+        // Product Data Object
         const productData = {
             name: pName,
             category: pCategory,
@@ -131,20 +133,19 @@
             oldPrice: Number(pOldPrice) || Number(pPrice),
             stock: Number(pStock) || 10,
             images: imagesArray,
-                       sizes: pSizes.split(',').map(s => s.trim()).filter(s => s !== ""),
+            sizes: pSizes.split(',').map(s => s.trim()).filter(s => s !== ""),
             colors: pColors.split(',').map(c => c.trim()).filter(c => c !== "")
         };
 
         try {
             msgDiv.textContent = "⏳ Adding product, please wait...";
-            msgDiv.className = "msg"; // Reset classes
+            msgDiv.className = "msg";
 
-            // Send data to Railway Backend
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-admin-key': adminKey // Security Key
+                    'x-admin-key': adminKey
                 },
                 body: JSON.stringify(productData)
             });
@@ -152,23 +153,22 @@
             const data = await response.json();
 
             if (response.ok) {
-                // Success
                 msgDiv.textContent = "✓ Product Added Successfully! Check your website.";
                 msgDiv.className = "msg success";
                 
-                // Clear form fields except password
+                // Form Clear karna
                 document.getElementById('pName').value = "";
                 document.getElementById('pBrand').value = "";
                 document.getElementById('pPrice').value = "";
                 document.getElementById('pOldPrice').value = "";
+                document.getElementById('pSizes').value = "";
+                document.getElementById('pColors').value = "";
                 document.getElementById('pImages').value = "";
             } else {
-                // Error from backend (e.g., wrong password)
                 msgDiv.textContent = "❌ Error: " + (data.error || "Incorrect Admin Key or Server issue.");
                 msgDiv.className = "msg error";
             }
         } catch (error) {
-            // Network Error
             msgDiv.textContent = "❌ Network Error: Backend se connect nahi ho paya.";
             msgDiv.className = "msg error";
         }
