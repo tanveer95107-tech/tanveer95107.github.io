@@ -68,7 +68,15 @@
         <label>Stock Quantity:</label>
         <input type="number" id="pStock" value="10">
     </div>
+    <div class="form-group">
+        <label>Available Sizes (Comma separated):</label>
+        <input type="text" id="pSizes" placeholder="e.g., S, M, L, XL ya 2Y, 3Y, 4Y">
+    </div>
 
+    <div class="form-group">
+        <label>Available Colors (Comma separated):</label>
+        <input type="text" id="pColors" placeholder="e.g., Red, Black, Blue">
+    </div>
     <div class="form-group">
         <label>Image URLs (Comma separated for multiple images):</label>
         <textarea id="pImages" rows="3" placeholder="https://link1.com/img1.jpg, https://link2.com/img2.jpg"></textarea>
@@ -102,6 +110,7 @@
         const pOldPrice = document.getElementById('pOldPrice').value;
         const pStock = document.getElementById('pStock').value;
         const pImagesRaw = document.getElementById('pImages').value;
+       
 
         // 3. Validation
         if (!pName || !pPrice) {
@@ -121,7 +130,9 @@
             price: Number(pPrice),
             oldPrice: Number(pOldPrice) || Number(pPrice),
             stock: Number(pStock) || 10,
-            images: imagesArray
+            images: imagesArray,
+                       sizes: pSizes.split(',').map(s => s.trim()).filter(s => s !== ""),
+            colors: pColors.split(',').map(c => c.trim()).filter(c => c !== "")
         };
 
         try {
