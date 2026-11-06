@@ -4411,10 +4411,30 @@ function openModal(index, cat){
     ${off>0?'<span class="off">-'+off+'% OFF</span>':''}
   `;
 
-  const sizes = cat === 'kids' ? ['2Y','4Y','6Y','8Y','10Y','12Y'] : ['XS','S','M','L','XL','XXL'];
+    // Database se Sizes uthana, agar na hon toh default dikhana
+  let sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : (cat === 'kids' ? ['2Y','4Y','6Y','8Y','10Y','12Y'] : ['XS','S','M','L','XL','XXL']);
+  
   document.getElementById('mSizes').innerHTML = sizes.map(s =>
     `<button class="size-btn" onclick="pickSize(this,'${s}')">${s}</button>`
   ).join('');
+
+  // Colors ko dikhana
+  const oldColor = document.getElementById('mColors');
+  if(oldColor) oldColor.remove();
+
+  if (p.colors && p.colors.length > 0) {
+      let colorsHTML = `
+        <div id="mColors" style="margin-top: 20px;">
+          <div class="opt-head">
+            <span class="opt-label">Available Colors</span>
+          </div>
+          <div style="font-size: 14px; margin-bottom: 20px; color: #555;">
+            ${p.colors.join(', ')}
+          </div>
+        </div>
+      `;
+      document.getElementById('mSizes').insertAdjacentHTML('afterend', colorsHTML);
+  }
 
   document.getElementById('mWish').classList.remove('active');
   document.getElementById('mWish').textContent = '♡';
