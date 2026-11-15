@@ -375,8 +375,10 @@
         if(!token) return;
 
         try {
-            // Products fetch karein
-            const prodRes = await fetch(API_URL);
+            // Products fetch karein (Admin ko saare chahiye)
+            const prodRes = await fetch(API_URL, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
             const products = await prodRes.json();
             document.getElementById('statProducts').textContent = products.length;
 
@@ -416,7 +418,8 @@
             stock: Number(document.getElementById('pStock').value) || 10,
             sizes: document.getElementById('pSizes').value.split(',').map(s => s.trim()).filter(s => s !== ""),
             colors: document.getElementById('pColors').value.split(',').map(c => c.trim()).filter(c => c !== ""),
-            images: [] 
+            images: [],
+            status: 'published' // NAYA: Default status
         };
 
         if (!productData.name || !productData.price) {
@@ -503,7 +506,10 @@
         tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; color: var(--text-muted);'>Loading products...</td></tr>";
 
         try {
-            const response = await fetch(API_URL);
+            const token = sessionStorage.getItem('adminToken');
+            const response = await fetch(API_URL, {
+                headers: { 'Authorization': 'Bearer ' + token } // NAYA: Admin ko saare products dikhane ke liye
+            });
             allProducts = await response.json();
             renderTable(allProducts);
         } catch (error) {
@@ -518,7 +524,14 @@
             return;
         }
 
-        tbody.innerHTML = products.map(p => `
+        tbody.innerHTML = products.map(p => {
+            // NAYA: Status Badge
+            const isPublished = p.status === 'published';
+            const statusBadge = isPublished 
+                ? `<span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">🟢 Published</span>`
+                : `<span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">⚪ Draft</span>`;
+
+            return `
             <tr>
                 <td><img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/50'}" class="product-img"></td>
                 <td>
@@ -526,14 +539,20 @@
                     <small style="color: var(--text-muted);">${p.brand}</small>
                 </td>
                 <td style="font-weight: 600;">Rs. ${p.price.toLocaleString()}</td>
-                <td><span style="background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 12px; text-transform: capitalize;">${p.category}</span></td>
                 <td>
-                    <!-- NO 2: EDIT BUTTON -->
+                    <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 12px; text-transform: capitalize;">${p.category}</span>
+                </td>
+                <td>
+                    <div style="margin-bottom: 8px;">${statusBadge}</div>
                     <button class="btn btn-info btn-sm" style="margin-right: 5px;" onclick="openEditModal('${p._id}')">✏️ Edit</button>
                     <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p._id}')">🗑 Delete</button>
+                    <button class="btn btn-sm" style="background: #64748b; margin-left: 5px;" onclick="toggleStatus('${p._id}', '${p.status || 'published'}')">
+                        ${isPublished ? '📥 Make Draft' : '📤 Publish'}
+                    </button>
                 </td>
             </tr>
-        `).join('');
+        `;
+        }).join('');
     }
 
     function filterProducts() {
@@ -635,6 +654,32 @@
         } finally {
             btn.textContent = "Update Product";
             btn.disabled = false;
+        }
+    }
+
+    // === NO 4: STATUS TOGGLE LOGIC ===
+    async function toggleStatus(id, currentStatus) {
+        const token = sessionStorage.getItem('adminToken');
+        const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+        
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (response.ok) {
+                loadProducts(); // Table refresh karein
+                loadDashboardData(); // Stats refresh karein
+            } else {
+                alert("Error: Status update nahi ho paya.");
+            }
+        } catch (error) {
+            alert("Network Error!");
         }
     }
 
