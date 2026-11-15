@@ -6,74 +6,136 @@
 <title>Tanu Store - Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #333; display: flex; }
-    
-    /* Login Screen CSS */
+    :root {
+        --primary: #c9a961;
+        --primary-hover: #b08d4b;
+        --bg: #f4f7f6;
+        --sidebar-bg: #0f172a;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg); color: var(--text-main); display: flex; min-height: 100vh; }
+
+    /* ================= LOGIN SCREEN ================= */
     #loginScreen {
-        position: fixed; inset: 0; background: #1a1a1a; z-index: 9999;
+        position: fixed; inset: 0; background: var(--sidebar-bg); z-index: 9999;
         display: flex; align-items: center; justify-content: center; flex-direction: column;
     }
     .login-box {
-        background: #fff; padding: 40px; border-radius: 10px; width: 100%; max-width: 380px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        background: #fff; padding: 40px; border-radius: 16px; width: 100%; max-width: 420px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4); animation: slideUp 0.5s ease;
     }
-    .login-box h2 { text-align: center; margin-bottom: 25px; color: #333; font-size: 24px; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .login-box h2 { text-align: center; margin-bottom: 30px; color: var(--text-main); font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
     .login-box input {
-        width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid #ddd;
-        border-radius: 6px; font-size: 15px; outline: none; transition: 0.3s;
+        width: 100%; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border);
+        border-radius: 8px; font-size: 15px; outline: none; transition: 0.3s; background: #f8fafc;
     }
-    .login-box input:focus { border-color: #c9a961; }
+    .login-box input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(201,169,97,0.1); }
     .login-box button {
-        width: 100%; padding: 14px; background: #c9a961; color: #fff; border: none;
-        border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;
+        width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none;
+        border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;
     }
-    .login-box button:hover { background: #b08d4b; }
-    #loginMsg { color: #dc3545; text-align: center; margin-top: 15px; font-size: 14px; font-weight: 500; }
+    .login-box button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(201,169,97,0.3); }
+    #loginMsg { color: var(--danger); text-align: center; margin-top: 15px; font-size: 14px; font-weight: 500; }
 
-    /* Dashboard CSS */
+    /* ================= DASHBOARD LAYOUT ================= */
     #dashboardScreen { display: none; width: 100%; }
-    .sidebar { width: 250px; background: #1a1a1a; color: #fff; min-height: 100vh; padding: 20px; position: fixed; }
-    .sidebar h2 { color: #c9a961; font-size: 20px; margin-bottom: 30px; text-align: center; }
-    .sidebar a { display: block; color: #bbb; text-decoration: none; padding: 12px 15px; border-radius: 6px; margin-bottom: 5px; cursor: pointer; transition: 0.3s; }
-    .sidebar a:hover, .sidebar a.active { background: #c9a961; color: #fff; }
     
-    .main-content { margin-left: 250px; flex: 1; padding: 30px; width: calc(100% - 250px); }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .header h1 { font-size: 24px; color: #333; }
-    
-    .card { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; display: none; }
+    /* Sidebar */
+    .sidebar { 
+        width: 260px; background: var(--sidebar-bg); color: #fff; height: 100vh; 
+        position: fixed; padding: 30px 20px; display: flex; flex-direction: column;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.05); z-index: 100;
+    }
+    .sidebar h2 { color: var(--primary); font-size: 22px; margin-bottom: 40px; text-align: center; font-weight: 700; letter-spacing: 1px; }
+    .sidebar a { 
+        display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; 
+        padding: 14px 18px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; 
+        transition: 0.2s; font-size: 15px; font-weight: 500;
+    }
+    .sidebar a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .sidebar a.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(201,169,97,0.3); }
+    .sidebar .logout-btn { 
+        margin-top: auto; background: rgba(239, 68, 68, 0.1); color: var(--danger); 
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    .sidebar .logout-btn:hover { background: var(--danger); color: #fff; }
+
+    /* Main Content */
+    .main-content { margin-left: 260px; flex: 1; padding: 40px; width: calc(100% - 260px); }
+    .header { 
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; 
+        animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .header h1 { font-size: 28px; font-weight: 700; color: var(--sidebar-bg); letter-spacing: -0.5px; }
+    .header .welcome { font-weight: 600; color: var(--primary); background: rgba(201,169,97,0.1); padding: 8px 16px; border-radius: 20px; font-size: 14px; }
+
+    /* Cards */
+    .card { 
+        background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.03); 
+        margin-bottom: 30px; display: none; border: 1px solid rgba(0,0,0,0.02);
+        animation: slideUp 0.4s ease;
+    }
     .card.active { display: block; }
-    .card h3 { margin-bottom: 20px; color: #333; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+    .card h3 { margin-bottom: 30px; color: var(--text-main); font-size: 20px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
     
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .form-group { margin-bottom: 15px; }
+    /* Forms */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .form-group { margin-bottom: 5px; }
     .form-group.full { grid-column: span 2; }
-    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #555; }
-    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 14px; transition: 0.3s; }
-    input:focus, select:focus, textarea:focus { border-color: #c9a961; outline: none; box-shadow: 0 0 0 3px rgba(201,169,97,0.1); }
-    .btn { padding: 12px 24px; background: #c9a961; color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: 0.3s; }
-    .btn:hover { background: #b08d4b; }
-    .btn-danger { background: #dc3545; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select, textarea { 
+        width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 10px; 
+        font-family: inherit; font-size: 14px; transition: 0.3s; background: #f8fafc; color: var(--text-main);
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); background: #fff; outline: none; box-shadow: 0 0 0 4px rgba(201,169,97,0.1); }
     
+    /* Buttons */
+    .btn { 
+        padding: 14px 28px; background: var(--primary); color: #fff; border: none; font-size: 15px; 
+        font-weight: 600; cursor: pointer; border-radius: 10px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(201,169,97,0.2); }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #dc2626; box-shadow: 0 8px 16px rgba(239,68,68,0.2); }
+    .btn-sm { padding: 10px 16px; font-size: 13px; border-radius: 8px; }
+
+    /* Image Upload Tabs */
+    .img-tabs { display: flex; gap: 10px; margin-bottom: 15px; background: #f1f5f9; padding: 6px; border-radius: 10px; width: fit-content; }
+    .img-tab { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); transition: 0.3s; }
+    .img-tab.active { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .img-content { display: none; }
+    .img-content.active { display: block; }
+
+    /* Table */
     .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f2f5; }
-    th { background: #f9f9f9; font-weight: 600; color: #555; font-size: 13px; text-transform: uppercase; }
-    td { font-size: 14px; color: #333; }
-    .product-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
-    .action-btns { display: flex; gap: 10px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; font-weight: 600; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { font-size: 14px; color: var(--text-main); }
+    .product-img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     
-    .msg { margin-top: 15px; padding: 12px; border-radius: 6px; font-weight: 500; display: none; font-size: 14px; }
-    .msg.success { background: #d4edda; color: #155724; display: block; border: 1px solid #c3e6cb; }
-    .msg.error { background: #f8d7da; color: #721c24; display: block; border: 1px solid #f5c6cb; }
-    
-    @media (max-width: 768px) {
-        body { flex-direction: column; }
-        .sidebar { width: 100%; min-height: auto; position: relative; }
-        .main-content { margin-left: 0; padding: 15px; width: 100%; }
+    /* Messages */
+    .msg { margin-top: 20px; padding: 16px; border-radius: 10px; font-weight: 500; display: none; font-size: 14px; }
+    .msg.success { background: #dcfce7; color: #166534; display: block; border: 1px solid #bbf7d0; }
+    .msg.error { background: #fee2e2; color: #991b1b; display: block; border: 1px solid #fecaca; }
+
+    @media (max-width: 900px) {
+        .sidebar { width: 100%; height: auto; position: relative; padding: 20px; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; }
+        .sidebar h2 { margin-bottom: 0; margin-right: auto; }
+        .sidebar a { margin: 5px; padding: 10px 15px; font-size: 14px; }
+        .sidebar .logout-btn { margin-top: 0; margin-left: 10px; }
+        .main-content { margin-left: 0; padding: 20px; width: 100%; }
         .form-grid { grid-template-columns: 1fr; }
         .form-group.full { grid-column: span 1; }
+        .card { padding: 25px; }
     }
 </style>
 </head>
@@ -84,7 +146,7 @@
     <div class="login-box">
         <h2>Tanu Store Admin</h2>
         <input type="password" id="loginPassword" placeholder="Enter Admin Password" onkeypress="if(event.key==='Enter') loginAdmin()">
-        <button onclick="loginAdmin()">Login</button>
+        <button onclick="loginAdmin()">Login to Dashboard</button>
         <p id="loginMsg"></p>
     </div>
 </div>
@@ -94,25 +156,23 @@
     
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Tanu Store Admin</h2>
-        <a class="active" onclick="showSection('addProductSection', this)">Add Product</a>
-        <a onclick="showSection('manageProductsSection', this); loadProducts();">Manage Products</a>
-        <a onclick="window.open('https://tanveer95107-tech.github.io/tanveer95107.github.io/', '_blank')">View Website ↗</a>
-        <a onclick="logoutAdmin()" style="background: #dc3545; color: white; margin-top: 20px; text-align: center;">Logout</a>
+        <h2>Tanu Store</h2>
+        <a class="active" onclick="showSection('addProductSection', this)">➕ Add Product</a>
+        <a onclick="showSection('manageProductsSection', this); loadProducts();">📦 Manage Products</a>
+        <a onclick="window.open('https://tanveer95107-tech.github.io/tanveer95107.github.io/', '_blank')">🌐 View Website</a>
+        <a class="logout-btn" onclick="logoutAdmin()">🚪 Logout</a>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
             <h1>Dashboard</h1>
-            <div style="font-weight: 600; color: #c9a961;">Welcome, Admin</div>
+            <div class="welcome">Welcome, Admin</div>
         </div>
 
         <!-- ADD PRODUCT SECTION -->
         <div class="card active" id="addProductSection">
             <h3>Add New Product</h3>
-            
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
             
             <div class="form-grid">
                 <div class="form-group full">
@@ -144,20 +204,34 @@
                     <input type="number" id="pStock" value="10">
                 </div>
                 <div class="form-group">
-                    <label>Available Sizes (Comma separated)</label>
+                    <label>Available Sizes</label>
                     <input type="text" id="pSizes" placeholder="e.g., S, M, L, XL">
                 </div>
                 <div class="form-group full">
-                    <label>Available Colors (Comma separated)</label>
+                    <label>Available Colors</label>
                     <input type="text" id="pColors" placeholder="e.g., Red, Black, Blue">
                 </div>
+                
+                <!-- IMAGE SECTION (TABS) -->
                 <div class="form-group full">
-                    <label>Image URLs (Comma separated)</label>
-                    <textarea id="pImages" rows="3" placeholder="https://link1.com/img1.jpg, https://link2.com/img2.jpg"></textarea>
+                    <label>Product Images *</label>
+                    <div class="img-tabs">
+                        <div class="img-tab active" onclick="switchImgTab('urlTab', this)">🔗 Paste Image URL</div>
+                        <div class="img-tab" onclick="switchImgTab('fileTab', this)">📤 Upload from Device</div>
+                    </div>
+                    
+                    <div id="urlTab" class="img-content active">
+                        <textarea id="pImages" rows="3" placeholder="https://link1.com/img1.jpg, https://link2.com/img2.jpg"></textarea>
+                    </div>
+
+                    <div id="fileTab" class="img-content">
+                        <input type="file" id="pFileUpload" accept="image/*" multiple style="padding: 12px; background: #f8fafc; border: 1px dashed var(--border); cursor: pointer;">
+                        <small style="color: var(--text-muted); display: block; margin-top: 8px;">You can select multiple images at once.</small>
+                    </div>
                 </div>
             </div>
             
-            <button class="btn" onclick="addProduct()">+ Add Product</button>
+            <button class="btn" id="addBtn" onclick="addProduct()" style="margin-top: 15px;">+ Add Product</button>
             <div id="message" class="msg"></div>
         </div>
 
@@ -165,8 +239,8 @@
         <div class="card" id="manageProductsSection">
             <h3>Manage Products</h3>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <input type="text" id="searchBar" placeholder="Search products..." oninput="filterProducts()" style="max-width: 300px;">
+            <div style="margin-bottom: 25px;">
+                <input type="text" id="searchBar" placeholder="🔍 Search products by name or category..." oninput="filterProducts()" style="max-width: 400px; background: #fff;">
             </div>
             
             <div id="listMessage" class="msg"></div>
@@ -176,14 +250,14 @@
                     <thead>
                         <tr>
                             <th>Image</th>
-                            <th>Product Name</th>
+                            <th>Product Details</th>
                             <th>Price</th>
                             <th>Category</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
-                        <tr><td colspan="5" style="text-align: center;">Loading products...</td></tr>
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading products...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -195,6 +269,7 @@
     // 1. Apna asli Backend URL yahan dalein
     const API_URL = "https://tanveer95107githubio-production.up.railway.app/api/products";
     const LOGIN_URL = "https://tanveer95107githubio-production.up.railway.app/api/admin/login";
+    const UPLOAD_URL = "https://tanveer95107githubio-production.up.railway.app/api/upload";
     
     let allProducts = [];
 
@@ -203,10 +278,7 @@
         const password = document.getElementById('loginPassword').value;
         const msg = document.getElementById('loginMsg');
         
-        if(!password) {
-            msg.textContent = "Please enter password!";
-            return;
-        }
+        if(!password) { msg.textContent = "Please enter password!"; return; }
 
         try {
             const res = await fetch(LOGIN_URL, {
@@ -217,11 +289,10 @@
             const data = await res.json();
 
             if (data.success) {
-                // Token save karein
                 sessionStorage.setItem('adminToken', data.token);
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'block';
-                loadProducts(); // Dashboard khulte hi products load karein
+                loadProducts();
             } else {
                 msg.textContent = "Ghalat Password!";
             }
@@ -230,13 +301,11 @@
         }
     }
 
-    // Logout Logic
     function logoutAdmin() {
         sessionStorage.removeItem('adminToken');
         window.location.reload();
     }
 
-    // Page Load par Check karein ke Token hai ya nahi
     window.onload = () => {
         const token = sessionStorage.getItem('adminToken');
         if (token) {
@@ -246,7 +315,16 @@
         }
     };
 
-    // === BAAKI DASHBOARD LOGIC ===
+    // === TABS LOGIC (URL vs Upload) ===
+    function switchImgTab(tabId, element) {
+        document.querySelectorAll('.img-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.img-content').forEach(c => c.classList.remove('active'));
+        
+        element.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // === DASHBOARD LOGIC ===
     function showSection(sectionId, element) {
         document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
         document.getElementById(sectionId).classList.add('active');
@@ -258,6 +336,7 @@
     async function addProduct() {
         const msgDiv = document.getElementById('message');
         const token = sessionStorage.getItem('adminToken');
+        const addBtn = document.getElementById('addBtn');
 
         const productData = {
             name: document.getElementById('pName').value.trim(),
@@ -266,9 +345,9 @@
             price: Number(document.getElementById('pPrice').value),
             oldPrice: Number(document.getElementById('pOldPrice').value) || Number(document.getElementById('pPrice').value),
             stock: Number(document.getElementById('pStock').value) || 10,
-            images: document.getElementById('pImages').value.split(',').map(url => url.trim()).filter(url => url !== ""),
             sizes: document.getElementById('pSizes').value.split(',').map(s => s.trim()).filter(s => s !== ""),
-            colors: document.getElementById('pColors').value.split(',').map(c => c.trim()).filter(c => c !== "")
+            colors: document.getElementById('pColors').value.split(',').map(c => c.trim()).filter(c => c !== ""),
+            images: [] 
         };
 
         if (!productData.name || !productData.price) {
@@ -277,16 +356,49 @@
             return;
         }
 
+        addBtn.textContent = "⏳ Processing...";
+        addBtn.disabled = true;
+
         try {
-            msgDiv.textContent = "⏳ Adding product...";
+            const urlImages = document.getElementById('pImages').value.split(',').map(url => url.trim()).filter(url => url !== "");
+            const fileInput = document.getElementById('pFileUpload');
+            let fileImages = [];
+
+            if (fileInput.files.length > 0) {
+                msgDiv.textContent = "⏳ Uploading images to server...";
+                msgDiv.className = "msg";
+
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const formData = new FormData();
+                    formData.append('image', fileInput.files[i]);
+
+                    const uploadRes = await fetch(UPLOAD_URL, {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        body: formData
+                    });
+                    
+                    const uploadData = await uploadRes.json();
+                    if (uploadData.success) fileImages.push(uploadData.imageUrl);
+                }
+            }
+
+            productData.images = [...urlImages, ...fileImages];
+
+            if(productData.images.length === 0) {
+                msgDiv.textContent = "⚠️ Please provide at least one image.";
+                msgDiv.className = "msg error";
+                addBtn.textContent = "+ Add Product";
+                addBtn.disabled = false;
+                return;
+            }
+
+            msgDiv.textContent = "⏳ Adding product to database...";
             msgDiv.className = "msg";
 
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': 'Bearer ' + token // Ab Token bhej rahe hain
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                 body: JSON.stringify(productData)
             });
 
@@ -295,7 +407,7 @@
             if (response.ok) {
                 msgDiv.textContent = "✓ Product Added Successfully!";
                 msgDiv.className = "msg success";
-                // Clear fields
+                // Clear form
                 document.getElementById('pName').value = "";
                 document.getElementById('pBrand').value = "";
                 document.getElementById('pPrice').value = "";
@@ -303,6 +415,7 @@
                 document.getElementById('pSizes').value = "";
                 document.getElementById('pColors').value = "";
                 document.getElementById('pImages').value = "";
+                document.getElementById('pFileUpload').value = "";
             } else {
                 msgDiv.textContent = "❌ Error: " + (data.error || "Check your Token.");
                 msgDiv.className = "msg error";
@@ -310,15 +423,15 @@
         } catch (error) {
             msgDiv.textContent = "❌ Network Error!";
             msgDiv.className = "msg error";
+        } finally {
+            addBtn.textContent = "+ Add Product";
+            addBtn.disabled = false;
         }
     }
 
     async function loadProducts() {
-        const listMsg = document.getElementById('listMessage');
         const tbody = document.getElementById('productTableBody');
-        
-        listMsg.style.display = "none";
-        tbody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>Loading...</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; color: var(--text-muted);'>Loading products...</td></tr>";
 
         try {
             const response = await fetch(API_URL);
@@ -332,20 +445,21 @@
     function renderTable(products) {
         const tbody = document.getElementById('productTableBody');
         if (products.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>No products found.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; color: var(--text-muted);'>No products found.</td></tr>";
             return;
         }
 
         tbody.innerHTML = products.map(p => `
             <tr>
                 <td><img src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/50'}" class="product-img"></td>
-                <td><strong>${p.name}</strong><br><small>${p.brand}</small></td>
-                <td>Rs. ${p.price}</td>
-                <td style="text-transform: capitalize;">${p.category}</td>
                 <td>
-                    <div class="action-btns">
-                        <button class="btn btn-danger" onclick="deleteProduct('${p._id}')">Delete</button>
-                    </div>
+                    <strong style="display: block; margin-bottom: 4px;">${p.name}</strong>
+                    <small style="color: var(--text-muted);">${p.brand}</small>
+                </td>
+                <td style="font-weight: 600;">Rs. ${p.price.toLocaleString()}</td>
+                <td><span style="background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 12px; text-transform: capitalize;">${p.category}</span></td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p._id}')">🗑 Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -362,20 +476,19 @@
 
     async function deleteProduct(id) {
         const token = sessionStorage.getItem('adminToken');
-        
-        if (!confirm("Are you sure you want to delete this product? Ye wapas nahi aayega.")) return;
+        if (!confirm("Are you sure you want to delete this product?")) return;
 
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': 'Bearer ' + token } // Ab Token bhej rahe hain
+                headers: { 'Authorization': 'Bearer ' + token }
             });
 
             if (response.ok) {
                 alert("Product Deleted Successfully!");
-                loadProducts(); // Reload list
+                loadProducts();
             } else {
-                alert("Error: You cannot delete this product. Check Token.");
+                alert("Error: You cannot delete this product.");
             }
         } catch (error) {
             alert("Network Error!");
