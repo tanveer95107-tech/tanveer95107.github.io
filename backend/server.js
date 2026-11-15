@@ -13,11 +13,16 @@ const port = process.env.PORT || 3000;
 // 1. SECURITY HEADERS (Helmet)
 app.use(helmet());
 
-// 2. STRICT CORS
 app.use(cors({
-  origin: ['https://tanveer95107-tech.github.io', 'https://tanveer95107.github.io', 'http://localhost:3000', 'http://127.0.0.1:5500'],
+  origin: [
+    'https://tanveer95107-tech.github.io',
+    'https://tanveer95107.github.io',
+    'http://localhost:3000',
+    'http://127.0.0.1:5500'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-key']
 }));
 
 app.use(express.json());
