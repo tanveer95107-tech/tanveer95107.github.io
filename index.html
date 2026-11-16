@@ -4052,6 +4052,32 @@ textarea {
     <a id="checkoutBtn" class="btn btn-gold" style="width:100%;margin-top:20px" href="https://wa.me/923339917323" target="_blank" rel="noopener">Order on WhatsApp <span class="arrow">→</span></a>
   </div>
 </aside>
+   
+   <!-- NAYA: CHECKOUT FORM MODAL -->
+   
+<div class="modal-ov" id="checkoutModal" style="z-index: 2000;">
+  <div class="modal" style="max-width: 500px; grid-template-columns: 1fr; padding: 30px; display: block;">
+    <button class="modal-close" onclick="closeCheckout()">×</button>
+    <h2 style="font-family: var(--font-serif); font-size: 28px; margin-bottom: 10px;">Checkout Details</h2>
+    <p style="color: var(--muted); font-size: 14px; margin-bottom: 25px;">Please enter your details to place the order.</p>
+    
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label style="font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Full Name *</label>
+      <input type="text" id="custName" placeholder="e.g., Ali Khan" style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-top: 5px;">
+    </div>
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label style="font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Phone Number *</label>
+      <input type="tel" id="custPhone" placeholder="e.g., 03001234567" style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-top: 5px;">
+    </div>
+    <div class="form-group" style="margin-bottom: 25px;">
+      <label style="font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Delivery Address *</label>
+      <textarea id="custAddress" rows="2" placeholder="House #, Street, Area, City" style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; margin-top: 5px;"></textarea>
+    </div>
+
+    <button class="btn btn-gold" id="placeOrderBtn" onclick="placeOrder()" style="width: 100%;">Place Order via WhatsApp <span class="arrow">→</span></button>
+    <div id="checkoutMsg" style="color: var(--danger); text-align: center; margin-top: 10px; font-size: 14px;"></div>
+  </div>
+</div>
 
 <!-- ================= PRODUCT MODAL ================= -->
 <div class="modal-ov" id="modalOv">
@@ -4331,7 +4357,13 @@ function updateCart(){
     subtotalEl.textContent = 'Rs. 0';
     shippingEl.textContent = '—';
     totalEl.textContent = 'Rs. 0';
-    checkout.href = 'https://wa.me/923339917323';
+    checkout.removeAttribute('href');
+checkout.removeAttribute('target');
+checkout.onclick = (e) => {
+    e.preventDefault();
+    if (cart.length === 0) { toast('Cart is empty'); return; }
+    document.getElementById('checkoutModal').classList.add('open');
+};
     return;
   }
 
@@ -4372,7 +4404,13 @@ function updateCart(){
   msg += `%0ASubtotal: ${formatPrice(subtotal)}%0A`;
   msg += `Shipping: ${shipping===0?'Free':formatPrice(shipping)}%0A`;
   msg += `Total: ${formatPrice(total)}`;
-  checkout.href = 'https://wa.me/923339917323?text=' + msg;
+ checkout.removeAttribute('href');
+checkout.removeAttribute('target');
+checkout.onclick = (e) => {
+    e.preventDefault();
+    if (cart.length === 0) { toast('Cart is empty'); return; }
+    document.getElementById('checkoutModal').classList.add('open');
+};
 }
 
 function openCart(){
@@ -4683,8 +4721,81 @@ updateCart();
 
 // Initialize the data fetch on page load
 fetchProductsFromDB();
+   // NAYA: Checkout Close karne ka function
+function closeCheckout() {
+    document.getElementById('checkoutModal').classList.remove('open');
+}
+
+// NAYA: Order place karne ka function
+async function placeOrder() {
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const address = document.getElementById('custAddress').value.trim();
+    const msgDiv = document.getElementById('checkoutMsg');
+    const btn = document.getElementById('placeOrderBtn');
+
+    if (!name || !phone || !address) {
+        msgDiv.textContent = "Please fill all fields!";
+        return;
+    }
+
+    if (phone.length < 10) {
+        msgDiv.textContent = "Please enter a valid phone number!";
+        return;
+    }
+
+    btn.textContent = "Placing Order...";
+    btn.disabled = true;
+    msgDiv.textContent = "";
+
+    const items = cart.map(item => ({
+        productId: item.id || item._id, 
+        quantity: item.quantity || 1,
+        size: item.size || null
+    }));
+
+    try {
+        const response = await fetch('https://tanveer95107githubio-production.up.railway.app/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                customerName: name,
+                phone: phone,
+                address: address,
+                items: items
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            let waMsg = `Hello Tanu Store! I have placed an order.%0A%0A*Order ID:* ${data.orderId}%0A*Total:* Rs. ${data.total}%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Address:* ${address}%0A%0A*Products:*%0A`;
+            
+            cart.forEach((it, i) => {
+                waMsg += `${i+1}. ${it.name} (Size: ${it.size || 'N/A'}) x ${it.quantity || 1}%0A`;
+            });
+
+            window.open('https://wa.me/923339917323?text=' + waMsg, '_blank');
+
+            cart = [];
+            saveCart();
+            updateCart();
+            closeCheckout();
+            closeCart();
+            toast('Order placed successfully!');
+        } else {
+            msgDiv.textContent = data.error || "Failed to place order.";
+        }
+    } catch (error) {
+        msgDiv.textContent = "Network Error! Please try again.";
+    } finally {
+        btn.textContent = "Place Order via WhatsApp →";
+        btn.disabled = false;
+    }
+}
 
 </script>
 
 <script src="mobile.js?v=1"></script></body>
 </html>
+
