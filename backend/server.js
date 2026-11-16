@@ -2,225 +2,284 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const { body, validationResult } = require('express-validator');
 require('dotenv').config();
-const jwt = require('jsonwebtoken'); // JWT Token security ke liye
-const multer = require('multer'); // NAYA: Image upload ke liye
-const cloudinary = require('cloudinary').v2; // NAYA: Cloudinary
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// 1. SECURITY HEADERS (Helmet)
+// ============ SECURITY HEADERS ============
 app.use(helmet());
+app.use(express.json({ limit: '1mb' }));
 
+// ============ CORS ============
 app.use(cors({
   origin: [
     'https://tanveer95107-tech.github.io',
-    'https://tanveer95107.github.io',
-    'http://localhost:3000',
-    'http://127.0.0.1:5500'
+    'https://tanveer95107.github.io'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-key']
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json());
+// ============ RATE LIMITING ============
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Too many login attempts. Try after 15 minutes.' }
+});
 
-// 3. CLOUDINARY CONFIG (NAYA)
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  message: { error: 'Too many requests' }
+});
+app.use('/api/', apiLimiter);
+
+// ============ CLOUDINARY ============
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// 4. MULTER SETUP (NAYA)
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// ============ MULTER (Image upload only) ============
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only images are allowed'));
+    }
+    cb(null, true);
+  }
+});
 
-// --- DATABASE MODELS ---
-
-// Product Model
+// ============ MODELS ============
 const Product = mongoose.model('Product', new mongoose.Schema({
-  name: { type: String, required: true },
-  brand: { type: String, default: "Tanu Store" },
-  category: { type: String, required: true },
-  price: { type: Number, required: true },
-  oldPrice: Number,
-  stock: { type: Number, default: 10 },
+  name: { type: String, required: true, trim: true, maxlength: 200 },
+  brand: { type: String, default: 'Tanu Store', trim: true },
+  category: { type: String, required: true, enum: ['men', 'women', 'kids'] },
+  price: { type: Number, required: true, min: 0 },
+  oldPrice: { type: Number, min: 0 },
+  stock: { type: Number, default: 10, min: 0 },
   images: [String],
-  sizes: [String], 
+  sizes: [String],
   colors: [String],
-  status: { type: String, default: 'published' } // NAYA: Draft ya Published
-}));
+  status: { type: String, enum: ['published', 'draft'], default: 'published' }
+}, { timestamps: true }));
 
-// Order Model
 const Order = mongoose.model('Order', new mongoose.Schema({
-  customerName: { type: String, required: true },
-  phone: { type: String, required: true },
-  address: { type: String, required: true },
-  products: { type: Array, required: true },
-  totalAmount: { type: Number, required: true },
-  status: { type: String, default: 'Pending' },
+  customerName: { type: String, required: true, trim: true, maxlength: 100 },
+  phone: { type: String, required: true, trim: true, maxlength: 20 },
+  address: { type: String, required: true, trim: true, maxlength: 500 },
+  items: [{
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    name: String,
+    price: Number,
+    quantity: { type: Number, default: 1, min: 1 },
+    size: String
+  }],
+  totalAmount: { type: Number, required: true, min: 0 },
+  status: { type: String, enum: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'], default: 'Pending' },
   createdAt: { type: Date, default: Date.now }
 }));
 
-// --- MIDDLEWARE: Verify Token (Security Guard) ---
+// ============ AUTH MIDDLEWARE ============
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(403).json({ error: 'Access Denied: No Token' });
-  
-  const token = authHeader.split(' ')[1]; 
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const token = authHeader.split(' ')[1];
   try {
-    jwt.verify(token, process.env.ADMIN_KEY);
-    next(); 
+    jwt.verify(token, process.env.JWT_SECRET);
+    next();
   } catch (err) {
-    return res.status(403).json({ error: 'Invalid ya Expired Token' });
+    return res.status(401).json({ error: 'Invalid or expired token' });
   }
 };
 
-// --- ROUTES ---
-
+// ============ ROUTES ============
 app.get('/', (req, res) => {
-  res.json({ message: 'Tanu Store Backend Chal Raha Hai! 🚀' });
+  res.json({ status: 'ok', message: 'Tanu Store API' });
 });
 
-// 1. LOGIN ROUTE
-app.post('/api/admin/login', (req, res) => {
-  const { password } = req.body;
-  
-  if (password === process.env.ADMIN_KEY) {
-    const token = jwt.sign({ role: 'admin' }, process.env.ADMIN_KEY, { expiresIn: '1d' });
-    return res.json({ success: true, token: token });
-  } else {
-    return res.status(401).json({ success: false, error: 'Ghalat Password!' });
+// LOGIN
+app.post('/api/admin/login',
+  loginLimiter,
+  body('password').isString().isLength({ min: 1, max: 200 }),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid input' });
+
+    try {
+      const { password } = req.body;
+      const hash = process.env.ADMIN_PASSWORD_HASH;
+      if (!hash) return res.status(500).json({ error: 'Server misconfigured' });
+
+      const match = await bcrypt.compare(password, hash);
+      if (!match) return res.status(401).json({ error: 'Invalid credentials' });
+
+      const token = jwt.sign({ role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '12h' });
+      res.json({ success: true, token });
+    } catch (err) {
+      res.status(500).json({ error: 'Login failed' });
+    }
   }
-});
+);
 
-// 2. GET: Saare products (Public)
-// NAYA: Agar admin request kare to saare products, warna sirf published
+// GET PRODUCTS
 app.get('/api/products', async (req, res) => {
   try {
-    // Check karein ke request admin ki taraf se hai ya nahi (Token)
     const authHeader = req.headers.authorization;
     let isAdmin = false;
-    
     if (authHeader) {
-      const token = authHeader.split(' ')[1];
       try {
-        jwt.verify(token, process.env.ADMIN_KEY);
+        jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
         isAdmin = true;
-      } catch (err) {
-        isAdmin = false;
-      }
+      } catch (e) { /* ignore */ }
     }
-
-    // Admin ko saare products, customer ko sirf published
     const query = isAdmin ? {} : { status: 'published' };
     const products = await Product.find(query).sort({ _id: -1 });
-    
     res.json(products);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to load products' });
   }
 });
 
-// 3. POST: Naya product add karna (Secure - Token Required)
-app.post('/api/products', verifyToken, async (req, res) => {
-  try {
-    if (Array.isArray(req.body)) {
-      const savedProducts = await Product.insertMany(req.body);
-      return res.status(201).json({ message: 'All Products Added!', count: savedProducts.length });
+// ADD PRODUCT
+app.post('/api/products', verifyToken,
+  body('name').isString().trim().isLength({ min: 1, max: 200 }),
+  body('category').isIn(['men', 'women', 'kids']),
+  body('price').isFloat({ min: 0 }),
+  body('images').isArray({ min: 1 }),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid product data' });
+
+    try {
+      const newProduct = new Product(req.body);
+      await newProduct.save();
+      res.status(201).json({ message: 'Product added', product: newProduct });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to add product' });
     }
-    
-    const newProduct = new Product(req.body);
-    await newProduct.save();
-    res.status(201).json({ message: 'Product Added!', product: newProduct });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
-});
+);
 
-// NAYA: PUT - Product update karna (Secure - Token Required)
+// UPDATE PRODUCT
 app.put('/api/products/:id', verifyToken, async (req, res) => {
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id, 
-      req.body, 
-      { new: true }
-    );
-    
-    if (!updatedProduct) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-
-    res.json({ message: 'Product Updated Successfully!', product: updatedProduct });
+    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!updated) return res.status(404).json({ error: 'Product not found' });
+    res.json({ message: 'Product updated', product: updated });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Update failed' });
   }
 });
 
-// 4. DELETE: Product delete karna (Secure - Token Required)
+// DELETE PRODUCT
 app.delete('/api/products/:id', verifyToken, async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) return res.status(404).json({ error: 'Product nahi mila!' });
-    
-    res.json({ message: 'Product Deleted Successfully!' });
+    const deleted = await Product.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Product not found' });
+    res.json({ message: 'Product deleted' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Delete failed' });
   }
 });
 
-// 5. POST: Naya Order place karna (Public)
-app.post('/api/orders', async (req, res) => {
+// UPLOAD IMAGE
+app.post('/api/upload', verifyToken, upload.single('image'), async (req, res) => {
   try {
-    const newOrder = new Order(req.body);
-    await newOrder.save();
-    res.status(201).json({ message: 'Order Placed Successfully!', order: newOrder });
+    if (!req.file) return res.status(400).json({ error: 'No image provided' });
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: 'tanu_store_products',
+      transformation: [{ width: 1000, crop: 'limit', quality: 'auto' }]
+    });
+    res.json({ success: true, imageUrl: result.secure_url });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Upload failed' });
   }
 });
 
-// 6. GET: Saare orders dekhna (Secure - Token Required)
+// PLACE ORDER (Server-side price verification)
+app.post('/api/orders',
+  body('customerName').isString().trim().isLength({ min: 1, max: 100 }),
+  body('phone').isString().trim().isLength({ min: 10, max: 20 }),
+  body('address').isString().trim().isLength({ min: 5, max: 500 }),
+  body('items').isArray({ min: 1 }),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid order data' });
+
+    try {
+      const { customerName, phone, address, items } = req.body;
+
+      let computedTotal = 0;
+      const verifiedItems = [];
+
+      for (const item of items) {
+        const product = await Product.findById(item.productId);
+        if (!product) return res.status(400).json({ error: `Product not found: ${item.name}` });
+        if (product.status !== 'published') return res.status(400).json({ error: `Product unavailable: ${product.name}` });
+
+        const qty = Math.max(1, Math.min(10, item.quantity || 1));
+        computedTotal += product.price * qty;
+
+        verifiedItems.push({
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          quantity: qty,
+          size: item.size || null
+        });
+      }
+
+      const newOrder = new Order({
+        customerName,
+        phone,
+        address,
+        items: verifiedItems,
+        totalAmount: computedTotal
+      });
+      await newOrder.save();
+      res.status(201).json({ message: 'Order placed', orderId: newOrder._id, total: computedTotal });
+    } catch (err) {
+      res.status(500).json({ error: 'Order failed' });
+    }
+  }
+);
+
+// GET ORDERS (admin only)
 app.get('/api/orders', verifyToken, async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 });
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to load orders' });
   }
 });
 
-// NAYA: POST - Image Upload karne ka route
-app.post('/api/upload', verifyToken, upload.single('image'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No image provided' });
-
-    // Image ko Base64 mein convert karein
-    const b64 = Buffer.from(req.file.buffer).toString('base64');
-    const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-
-    // Cloudinary par upload karein
-    const result = await cloudinary.uploader.upload(dataURI, {
-      folder: 'tanu_store_products'
-    });
-
-    res.json({ success: true, imageUrl: result.secure_url });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// ============ ERROR HANDLER ============
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Something went wrong' });
 });
 
-// --- DATABASE CONNECTION ---
+// ============ DATABASE ============
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log('✅ MongoDB Connected Successfully!');
-    app.listen(port, '0.0.0.0', () => {
-      console.log(`Server live on port ${port}`);
-    });
+    console.log('✅ MongoDB Connected');
+    app.listen(port, '0.0.0.0', () => console.log(`🚀 Server on port ${port}`));
   })
-  .catch(err => {
-    console.log('❌ MongoDB Connection Error: ', err);
-  });
+  .catch(err => console.log('❌ MongoDB Error:', err));
