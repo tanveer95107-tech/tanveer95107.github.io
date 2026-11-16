@@ -36,7 +36,7 @@ html {
 html,
 body {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
   position: relative;
 }
@@ -621,7 +621,7 @@ textarea {
    ============================================ */
 .hero {
   position: relative;
-  min-height: calc(100vh - 88px);
+    min-height: calc(100svh - 88px);
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -3834,7 +3834,7 @@ textarea {
 <section class="founder" id="about">
   <div class="founder-inner">
     <div class="founder-media reveal-l">
-      <img src="founder.jpeg" alt="Tanu Store Founder">
+     <img src="founder.jpeg" alt="Tanu Store Founder" loading="lazy" width="400" height="500">
       <div class="founder-tag">
         <div class="name">Founder & Creative Director</div>
         <div class="role">Tanu Store</div>
