@@ -68,6 +68,9 @@ const Product = mongoose.model('Product', new mongoose.Schema({
   category: { type: String, required: true, enum: ['men', 'women', 'kids'] },
   price: { type: Number, required: true, min: 0 },
   oldPrice: { type: Number, min: 0 },
+  salePrice: { type: Number, default: 0 },   // NAYA: Sale Price
+  onSale: { type: Boolean, default: false },  // NAYA: Sale On/Off
+  saleEnds: { type: Date, default: null },    // NAYA: Sale End Date
   stock: { type: Number, default: 10, min: 0 },
   images: [String],
   sizes: [String],
@@ -135,9 +138,15 @@ app.post('/api/admin/login',
   }
 );
 
-// GET PRODUCTS
+// GET PRODUCTS (with auto-expiry check)
 app.get('/api/products', async (req, res) => {
   try {
+    // NAYA: Expired sales auto-remove
+    await Product.updateMany(
+      { onSale: true, saleEnds: { $lt: new Date() } },
+      { onSale: false, salePrice: 0, saleEnds: null }
+    );
+
     const authHeader = req.headers.authorization;
     let isAdmin = false;
     if (authHeader) {
@@ -196,6 +205,51 @@ app.delete('/api/products/:id', verifyToken, async (req, res) => {
   }
 });
 
+// ============ NAYA: BULK SALE ROUTES ============
+
+// Bulk Sale Apply (Admin Only)
+app.post('/api/products/sale', verifyToken, async (req, res) => {
+  try {
+    const { category, discountPercent, durationDays } = req.body;
+    
+    if (!discountPercent || discountPercent < 1 || discountPercent > 99) {
+      return res.status(400).json({ error: 'Discount 1 se 99 ke darmiyan hona chahiye' });
+    }
+
+    const saleEnds = new Date();
+    saleEnds.setDate(saleEnds.getDate() + (durationDays || 7));
+
+    const query = category && category !== 'all' ? { category } : {};
+    const products = await Product.find(query);
+
+    for (let p of products) {
+      const salePrice = Math.round(p.price - (p.price * discountPercent / 100));
+      p.salePrice = salePrice;
+      p.onSale = true;
+      p.saleEnds = saleEnds;
+      await p.save();
+    }
+
+    res.json({ message: `Sale applied on ${products.length} products!`, saleEnds });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Bulk Sale Remove (Admin Only)
+app.post('/api/products/sale/remove', verifyToken, async (req, res) => {
+  try {
+    const { category } = req.body;
+    const query = category && category !== 'all' ? { category } : {};
+    await Product.updateMany(query, { onSale: false, salePrice: 0, saleEnds: null });
+    res.json({ message: 'Sale removed successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============ END SALE ROUTES ============
+
 // UPLOAD IMAGE
 app.post('/api/upload', verifyToken, upload.single('image'), async (req, res) => {
   try {
@@ -234,12 +288,15 @@ app.post('/api/orders',
         if (product.status !== 'published') return res.status(400).json({ error: `Product unavailable: ${product.name}` });
 
         const qty = Math.max(1, Math.min(10, item.quantity || 1));
-        computedTotal += product.price * qty;
+        
+        // NAYA: Agar product on sale hai to salePrice use karein, warna normal price
+        const effectivePrice = product.onSale && product.salePrice > 0 ? product.salePrice : product.price;
+        computedTotal += effectivePrice * qty;
 
         verifiedItems.push({
           productId: product._id,
           name: product.name,
-          price: product.price,
+          price: effectivePrice,
           quantity: qty,
           size: item.size || null
         });
