@@ -4177,6 +4177,9 @@ const closeMobileNav = () => document.getElementById('mobileNav').classList.remo
    RENDER PRODUCTS
    ============================================ */
 function productHTML(p, cat, i, showNew){
+     const isOnSale = p.onSale && p.salePrice > 0;
+  const effectivePrice = isOnSale ? p.salePrice : p.price;
+  const saleOff = isOnSale ? Math.round(((p.price - p.salePrice)/p.price)*100) : 0;
   const off = Math.round(((p.oldPrice - p.price)/p.oldPrice)*100);
   const imgArr = p.images && p.images.length > 0 ? p.images : ["https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=85"];
   const hasMultiple = imgArr.length > 1;
@@ -4202,9 +4205,9 @@ function productHTML(p, cat, i, showNew){
   return `
     <article class="pcard">
       <div class="pcard-img">
-        <div class="pcard-badges">
+                <div class="pcard-badges">
           ${showNew || i < 3 ? '<span class="pill new">New</span>' : ''}
-          ${off >= 25 ? '<span class="pill sale">-'+off+'%</span>' : ''}
+          ${isOnSale ? '<span class="pill sale">🔥 SALE</span>' : (off >= 25 ? '<span class="pill sale">-'+off+'%</span>' : '')}
         </div>
         <button class="pcard-wish" onclick="toggleWish(this,event)" aria-label="Wishlist">♡</button>
         <div class="pcard-slider">${slidesHTML}</div>
@@ -4214,10 +4217,11 @@ function productHTML(p, cat, i, showNew){
       </div>
             <div class="pcard-brand">${escapeHTML(p.brand)}</div>
       <h3 class="pcard-name">${escapeHTML(p.name)}</h3>
-      <div class="pcard-price">
-        <span class="now">${formatPrice(p.price)}</span>
-        <span class="was">${formatPrice(p.oldPrice)}</span>
-        ${off>0 ? '<span class="off">-'+off+'%</span>' : ''}
+           <div class="pcard-price">
+        <span class="now">${formatPrice(effectivePrice)}</span>
+        ${isOnSale 
+          ? `<span class="was">${formatPrice(p.price)}</span><span class="off">-${saleOff}%</span>` 
+          : (p.oldPrice > p.price ? `<span class="was">${formatPrice(p.oldPrice)}</span><span class="off">-${off}%</span>` : '')}
       </div>
     </article>
   `;
@@ -4444,7 +4448,9 @@ function openModal(index, cat){
   currentSize = '';
      document.getElementById('mQty').textContent = '1'; // Har naye product par quantity 1 set karein
   window.currentQuantity = 1; 
-
+  const isOnSale = p.onSale && p.salePrice > 0;
+  const effectivePrice = isOnSale ? p.salePrice : p.price;
+  const saleOff = isOnSale ? Math.round(((p.price - p.salePrice)/p.price)*100) : 0;
   const off = Math.round(((p.oldPrice - p.price)/p.oldPrice)*100);
 
   const slider = document.getElementById('modalSlider');
@@ -4463,12 +4469,14 @@ function openModal(index, cat){
 
   document.getElementById('mBrand').textContent = p.brand + ' · ' + cat.charAt(0).toUpperCase()+cat.slice(1);
   document.getElementById('mName').textContent = p.name;
-  document.getElementById('mPrice').innerHTML = `
-    <span class="now">${formatPrice(p.price)}</span>
-    <span class="was">${formatPrice(p.oldPrice)}</span>
-    ${off>0?'<span class="off">-'+off+'% OFF</span>':''}
+   
+     document.getElementById('mPrice').innerHTML = `
+    <span class="now">${formatPrice(effectivePrice)}</span>
+    ${isOnSale 
+      ? `<span class="was">${formatPrice(p.price)}</span><span class="off">-${saleOff}% OFF</span>` 
+      : (p.oldPrice > p.price ? `<span class="was">${formatPrice(p.oldPrice)}</span><span class="off">-${off}% OFF</span>` : '')}
   `;
-
+   
      // Size Check: Agar sizes khali hain, toh size ka option bilkul hide karein
   const sizeSection = document.querySelector('.opt-head'); 
   const sizeButtons = document.getElementById('mSizes');
