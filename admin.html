@@ -137,7 +137,6 @@
         <a onclick="showSection('addProductSection', this)">➕ Add Product</a>
         <a onclick="showSection('manageProductsSection', this); loadProducts();">📦 Manage Products</a>
         <a onclick="showSection('ordersSection', this); loadOrders();">🛍️ Customer Orders</a>
-        <!-- NAYA: Manage Sale -->
         <a onclick="showSection('saleSection', this)">🔥 Manage Sale</a>
         <a onclick="window.open('https://tanveer95107-tech.github.io/tanveer95107.github.io/', '_blank')">🌐 View Website</a>
         <a class="logout-btn" onclick="logoutAdmin()">🚪 Logout</a>
@@ -261,16 +260,17 @@
                             <th>Customer Details</th>
                             <th>Products</th>
                             <th>Total Amount</th>
+                            <th>Status</th> <!-- NAYA -->
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
-                        <tr><td colspan="4" style="text-align: center;">Loading orders...</td></tr>
+                        <tr><td colspan="5" style="text-align: center;">Loading orders...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- NAYA: SALE SECTION -->
+        <!-- SALE SECTION -->
         <div class="card" id="saleSection">
             <h3>🔥 Bulk Sale Manager</h3>
             <p style="color: var(--text-muted); margin-bottom: 25px;">Yahan se aap poore store ya kisi specific category par discount laga sakte hain.</p>
@@ -305,16 +305,28 @@
     </div>
 </div>
 
-<!-- EDIT PRODUCT MODAL -->
+<!-- EDIT PRODUCT MODAL (UPDATED) -->
 <div id="editProductModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="margin-bottom: 25px; color: var(--text-main); border-bottom: 1px solid var(--border); padding-bottom: 15px;">Edit Product</h3>
         <input type="hidden" id="editId">
         
-        <div class="form-grid" style="grid-template-columns: 1fr;">
-            <div class="form-group">
+        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group full" style="grid-column: span 2;">
                 <label>Product Name</label>
                 <input type="text" id="editName">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="editCategory">
+                    <option value="men">Men</option>
+                    <option value="women">Women</option>
+                    <option value="kids">Kids</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Brand</label>
+                <input type="text" id="editBrand">
             </div>
             <div class="form-group">
                 <label>Price (Rs.)</label>
@@ -325,6 +337,18 @@
                 <input type="number" id="editOldPrice">
             </div>
             <div class="form-group">
+                <label>Stock</label>
+                <input type="number" id="editStock">
+            </div>
+            <div class="form-group">
+                <label>Sizes (Comma separated)</label>
+                <input type="text" id="editSizes">
+            </div>
+            <div class="form-group full" style="grid-column: span 2;">
+                <label>Colors (Comma separated)</label>
+                <input type="text" id="editColors">
+            </div>
+            <div class="form-group full" style="grid-column: span 2;">
                 <label>Images (URLs, comma separated)</label>
                 <textarea id="editImages" rows="2"></textarea>
             </div>
@@ -365,7 +389,7 @@
                 sessionStorage.setItem('adminToken', data.token);
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'block';
-                loadDashboardData(); // Dashboard data load karein
+                loadDashboardData();
             } else {
                 msg.textContent = "Ghalat Password!";
             }
@@ -559,7 +583,6 @@
                 ? `<span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">🟢 Published</span>`
                 : `<span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">⚪ Draft</span>`;
             
-            // NAYA: Sale Badge
             const saleBadge = p.onSale 
                 ? `<span style="background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">🔥 On Sale: Rs. ${p.salePrice}</span>` 
                 : '';
@@ -626,8 +649,13 @@
 
         document.getElementById('editId').value = p._id;
         document.getElementById('editName').value = p.name;
+        document.getElementById('editCategory').value = p.category;
+        document.getElementById('editBrand').value = p.brand || 'Tanu Store';
         document.getElementById('editPrice').value = p.price;
         document.getElementById('editOldPrice').value = p.oldPrice || p.price;
+        document.getElementById('editStock').value = p.stock || 10;
+        document.getElementById('editSizes').value = p.sizes ? p.sizes.join(', ') : '';
+        document.getElementById('editColors').value = p.colors ? p.colors.join(', ') : '';
         document.getElementById('editImages').value = p.images ? p.images.join(', ') : '';
 
         document.getElementById('editProductModal').style.display = 'flex';
@@ -647,8 +675,13 @@
 
         const updatedData = {
             name: document.getElementById('editName').value.trim(),
+            category: document.getElementById('editCategory').value,
+            brand: document.getElementById('editBrand').value.trim(),
             price: Number(document.getElementById('editPrice').value),
             oldPrice: Number(document.getElementById('editOldPrice').value),
+            stock: Number(document.getElementById('editStock').value),
+            sizes: document.getElementById('editSizes').value.split(',').map(s => s.trim()).filter(s => s !== ""),
+            colors: document.getElementById('editColors').value.split(',').map(c => c.trim()).filter(c => c !== ""),
             images: document.getElementById('editImages').value.split(',').map(url => url.trim()).filter(url => url !== "")
         };
 
@@ -716,11 +749,11 @@
         }
     }
 
-    // === LOAD ORDERS ===
+    // === LOAD ORDERS (UPDATED) ===
     async function loadOrders() {
         const token = sessionStorage.getItem('adminToken');
         const tbody = document.getElementById('ordersTableBody');
-        tbody.innerHTML = "<tr><td colspan='4' style='text-align: center; color: var(--text-muted);'>Loading orders...</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; color: var(--text-muted);'>Loading orders...</td></tr>";
 
         try {
             const response = await fetch(ORDERS_URL, {
@@ -732,7 +765,7 @@
             const orders = await response.json();
             
             if (orders.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='4' style='text-align: center; color: var(--text-muted);'>No orders yet.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; color: var(--text-muted);'>No orders yet.</td></tr>";
                 return;
             }
 
@@ -741,6 +774,12 @@
                 const productsList = order.items.map(p => 
                     `<li>${p.name} ${p.size ? '('+p.size+')' : ''} x ${p.quantity || 1}</li>`
                 ).join('');
+
+                let statusColor = '#f59e0b';
+                if (order.status === 'Confirmed') statusColor = '#3b82f6';
+                if (order.status === 'Shipped') statusColor = '#8b5cf6';
+                if (order.status === 'Delivered') statusColor = '#22c55e';
+                if (order.status === 'Cancelled') statusColor = '#ef4444';
 
                 return `
                     <tr>
@@ -756,16 +795,68 @@
                             </ul>
                         </td>
                         <td style="font-weight: 700; color: var(--success);">Rs. ${order.totalAmount.toLocaleString()}</td>
+                        <td>
+                            <select onchange="updateOrderStatus('${order._id}', this.value)" style="padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: ${statusColor}20; color: ${statusColor}; font-weight: 600; cursor: pointer; margin-bottom: 5px; width: 100%;">
+                                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Confirmed" ${order.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                                <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                            <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="deleteOrder('${order._id}')">🗑 Delete</button>
+                        </td>
                     </tr>
                 `;
             }).join('');
 
         } catch (error) {
-            tbody.innerHTML = "<tr><td colspan='4' style='text-align: center; color: red;'>Error loading orders.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; color: red;'>Error loading orders.</td></tr>";
         }
     }
 
-    // === SALE MANAGER FUNCTIONS (NAYA) ===
+    // === UPDATE ORDER STATUS ===
+    async function updateOrderStatus(id, newStatus) {
+        const token = sessionStorage.getItem('adminToken');
+        try {
+            const response = await fetch(`${ORDERS_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (response.ok) {
+                loadOrders();
+                loadDashboardData();
+            } else {
+                alert("Status update nahi ho paya.");
+            }
+        } catch (error) {
+            alert("Network Error!");
+        }
+    }
+
+    // === DELETE ORDER ===
+    async function deleteOrder(id) {
+        if (!confirm("Kya aap waqai yeh order delete karna chahte hain?")) return;
+        
+        const token = sessionStorage.getItem('adminToken');
+        try {
+            const response = await fetch(`${ORDERS_URL}/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (response.ok) {
+                alert("Order Deleted Successfully!");
+                loadOrders();
+                loadDashboardData();
+            } else {
+                alert("Order delete nahi ho paya.");
+            }
+        } catch (error) {
+            alert("Network Error!");
+        }
+    }
+
+    // === SALE MANAGER FUNCTIONS ===
     async function applySale() {
         const token = sessionStorage.getItem('adminToken');
         const category = document.getElementById('saleCategory').value;
