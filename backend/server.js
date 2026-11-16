@@ -68,9 +68,9 @@ const Product = mongoose.model('Product', new mongoose.Schema({
   category: { type: String, required: true, enum: ['men', 'women', 'kids'] },
   price: { type: Number, required: true, min: 0 },
   oldPrice: { type: Number, min: 0 },
-  salePrice: { type: Number, default: 0 },   // NAYA: Sale Price
-  onSale: { type: Boolean, default: false },  // NAYA: Sale On/Off
-  saleEnds: { type: Date, default: null },    // NAYA: Sale End Date
+  salePrice: { type: Number, default: 0 },
+  onSale: { type: Boolean, default: false },
+  saleEnds: { type: Date, default: null },
   stock: { type: Number, default: 10, min: 0 },
   images: [String],
   sizes: [String],
@@ -141,7 +141,6 @@ app.post('/api/admin/login',
 // GET PRODUCTS (with auto-expiry check)
 app.get('/api/products', async (req, res) => {
   try {
-    // NAYA: Expired sales auto-remove
     await Product.updateMany(
       { onSale: true, saleEnds: { $lt: new Date() } },
       { onSale: false, salePrice: 0, saleEnds: null }
@@ -205,7 +204,7 @@ app.delete('/api/products/:id', verifyToken, async (req, res) => {
   }
 });
 
-// ============ NAYA: BULK SALE ROUTES ============
+// ============ BULK SALE ROUTES ============
 
 // Bulk Sale Apply (Admin Only)
 app.post('/api/products/sale', verifyToken, async (req, res) => {
@@ -288,8 +287,6 @@ app.post('/api/orders',
         if (product.status !== 'published') return res.status(400).json({ error: `Product unavailable: ${product.name}` });
 
         const qty = Math.max(1, Math.min(10, item.quantity || 1));
-        
-        // NAYA: Agar product on sale hai to salePrice use karein, warna normal price
         const effectivePrice = product.onSale && product.salePrice > 0 ? product.salePrice : product.price;
         computedTotal += effectivePrice * qty;
 
@@ -326,6 +323,41 @@ app.get('/api/orders', verifyToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to load orders' });
   }
 });
+
+// ============ NAYA: ORDER STATUS UPDATE ROUTE ============
+app.put('/api/orders/:id', verifyToken, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const validStatuses = ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedOrder) return res.status(404).json({ error: 'Order not found' });
+
+    res.json({ message: 'Order status updated', order: updatedOrder });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update order' });
+  }
+});
+
+// ============ NAYA: ORDER DELETE ROUTE ============
+app.delete('/api/orders/:id', verifyToken, async (req, res) => {
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+    if (!deletedOrder) return res.status(404).json({ error: 'Order not found' });
+    res.json({ message: 'Order deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete order' });
+  }
+});
+// ============ END ORDER ROUTES ============
 
 // ============ ERROR HANDLER ============
 app.use((err, req, res, next) => {
