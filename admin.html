@@ -36,7 +36,7 @@
 
     /* Dashboard Layout */
     #dashboardScreen { display: none; width: 100%; }
-    .sidebar { width: 260px; background: var(--sidebar-bg); color: #fff; height: 100vh; position: fixed; padding: 30px 20px; display: flex; flex-direction: column; box-shadow: 4px 0 24px rgba(0,0,0,0.05); z-index: 100; }
+    .sidebar { width: 260px; background: var(--sidebar-bg); color: #fff; height: 100vh; position: fixed; padding: 30px 20px; display: flex; flex-direction: column; box-shadow: 4px 0 24px rgba(0,0,0,0.05); z-index: 100; overflow-y: auto; }
     .sidebar h2 { color: var(--primary); font-size: 22px; margin-bottom: 40px; text-align: center; font-weight: 700; letter-spacing: 1px; }
     .sidebar a { display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; padding: 14px 18px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; font-size: 15px; font-weight: 500; }
     .sidebar a:hover { background: rgba(255,255,255,0.05); color: #fff; }
@@ -137,6 +137,8 @@
         <a onclick="showSection('addProductSection', this)">➕ Add Product</a>
         <a onclick="showSection('manageProductsSection', this); loadProducts();">📦 Manage Products</a>
         <a onclick="showSection('ordersSection', this); loadOrders();">🛍️ Customer Orders</a>
+        <!-- NAYA: Manage Sale -->
+        <a onclick="showSection('saleSection', this)">🔥 Manage Sale</a>
         <a onclick="window.open('https://tanveer95107-tech.github.io/tanveer95107.github.io/', '_blank')">🌐 View Website</a>
         <a class="logout-btn" onclick="logoutAdmin()">🚪 Logout</a>
     </div>
@@ -267,6 +269,39 @@
                 </table>
             </div>
         </div>
+
+        <!-- NAYA: SALE SECTION -->
+        <div class="card" id="saleSection">
+            <h3>🔥 Bulk Sale Manager</h3>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Yahan se aap poore store ya kisi specific category par discount laga sakte hain.</p>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Select Category</label>
+                    <select id="saleCategory">
+                        <option value="all">All Products (Poora Store)</option>
+                        <option value="men">Men</option>
+                        <option value="women">Women</option>
+                        <option value="kids">Kids</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Discount (%)</label>
+                    <input type="number" id="saleDiscount" placeholder="e.g., 20" min="1" max="99">
+                </div>
+                <div class="form-group">
+                    <label>Duration (Days)</label>
+                    <input type="number" id="saleDuration" placeholder="e.g., 7" value="7" min="1">
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn" onclick="applySale()" style="background: #ef4444;">🔥 Apply Sale</button>
+                <button class="btn" onclick="removeSale()" style="background: #64748b;">❌ Remove Sale</button>
+            </div>
+            
+            <div id="saleMessage" class="msg"></div>
+        </div>
     </div>
 </div>
 
@@ -369,20 +404,18 @@
         element.classList.add('active');
     }
 
-    // === DASHBOARD DATA (NO 3) ===
+    // === DASHBOARD DATA ===
     async function loadDashboardData() {
         const token = sessionStorage.getItem('adminToken');
         if(!token) return;
 
         try {
-            // Products fetch karein (Admin ko saare chahiye)
             const prodRes = await fetch(API_URL, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const products = await prodRes.json();
             document.getElementById('statProducts').textContent = products.length;
 
-            // Orders fetch karein
             const orderRes = await fetch(ORDERS_URL, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
@@ -390,12 +423,8 @@
             if(orderRes.ok) {
                 const orders = await orderRes.json();
                 document.getElementById('statOrders').textContent = orders.length;
-
-                // Total Sales calculate karein
                 let totalSales = 0;
-                orders.forEach(order => {
-                    totalSales += order.totalAmount;
-                });
+                orders.forEach(order => { totalSales += order.totalAmount; });
                 document.getElementById('statSales').textContent = "Rs. " + totalSales.toLocaleString();
             }
         } catch (error) {
@@ -419,7 +448,7 @@
             sizes: document.getElementById('pSizes').value.split(',').map(s => s.trim()).filter(s => s !== ""),
             colors: document.getElementById('pColors').value.split(',').map(c => c.trim()).filter(c => c !== ""),
             images: [],
-            status: 'published' // NAYA: Default status
+            status: 'published'
         };
 
         if (!productData.name || !productData.price) {
@@ -508,7 +537,7 @@
         try {
             const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_URL, {
-                headers: { 'Authorization': 'Bearer ' + token } // NAYA: Admin ko saare products dikhane ke liye
+                headers: { 'Authorization': 'Bearer ' + token }
             });
             allProducts = await response.json();
             renderTable(allProducts);
@@ -525,11 +554,15 @@
         }
 
         tbody.innerHTML = products.map(p => {
-            // NAYA: Status Badge
             const isPublished = p.status === 'published';
             const statusBadge = isPublished 
                 ? `<span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">🟢 Published</span>`
                 : `<span style="background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">⚪ Draft</span>`;
+            
+            // NAYA: Sale Badge
+            const saleBadge = p.onSale 
+                ? `<span style="background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">🔥 On Sale: Rs. ${p.salePrice}</span>` 
+                : '';
 
             return `
             <tr>
@@ -543,7 +576,7 @@
                     <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 12px; text-transform: capitalize;">${p.category}</span>
                 </td>
                 <td>
-                    <div style="margin-bottom: 8px;">${statusBadge}</div>
+                    <div style="margin-bottom: 8px;">${statusBadge} ${saleBadge}</div>
                     <button class="btn btn-info btn-sm" style="margin-right: 5px;" onclick="openEditModal('${p._id}')">✏️ Edit</button>
                     <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p._id}')">🗑 Delete</button>
                     <button class="btn btn-sm" style="background: #64748b; margin-left: 5px;" onclick="toggleStatus('${p._id}', '${p.status || 'published'}')">
@@ -577,7 +610,7 @@
             if (response.ok) {
                 alert("Product Deleted Successfully!");
                 loadProducts();
-                loadDashboardData(); // Stats update
+                loadDashboardData();
             } else {
                 alert("Error: You cannot delete this product.");
             }
@@ -586,7 +619,7 @@
         }
     }
 
-    // === NO 2: EDIT MODAL LOGIC ===
+    // === EDIT MODAL ===
     function openEditModal(id) {
         const p = allProducts.find(prod => prod._id === id);
         if(!p) return;
@@ -657,7 +690,7 @@
         }
     }
 
-    // === NO 4: STATUS TOGGLE LOGIC ===
+    // === STATUS TOGGLE ===
     async function toggleStatus(id, currentStatus) {
         const token = sessionStorage.getItem('adminToken');
         const newStatus = currentStatus === 'published' ? 'draft' : 'published';
@@ -673,8 +706,8 @@
             });
 
             if (response.ok) {
-                loadProducts(); // Table refresh karein
-                loadDashboardData(); // Stats refresh karein
+                loadProducts();
+                loadDashboardData();
             } else {
                 alert("Error: Status update nahi ho paya.");
             }
@@ -683,7 +716,7 @@
         }
     }
 
-    // === NO 1: LOAD ORDERS ===
+    // === LOAD ORDERS ===
     async function loadOrders() {
         const token = sessionStorage.getItem('adminToken');
         const tbody = document.getElementById('ordersTableBody');
@@ -705,7 +738,7 @@
 
             tbody.innerHTML = orders.map(order => {
                 const date = new Date(order.createdAt).toLocaleString();
-                const productsList = order.products.map(p => 
+                const productsList = order.items.map(p => 
                     `<li>${p.name} ${p.size ? '('+p.size+')' : ''} x ${p.quantity || 1}</li>`
                 ).join('');
 
@@ -729,6 +762,73 @@
 
         } catch (error) {
             tbody.innerHTML = "<tr><td colspan='4' style='text-align: center; color: red;'>Error loading orders.</td></tr>";
+        }
+    }
+
+    // === SALE MANAGER FUNCTIONS (NAYA) ===
+    async function applySale() {
+        const token = sessionStorage.getItem('adminToken');
+        const category = document.getElementById('saleCategory').value;
+        const discountPercent = Number(document.getElementById('saleDiscount').value);
+        const durationDays = Number(document.getElementById('saleDuration').value);
+        const msgDiv = document.getElementById('saleMessage');
+
+        if (!discountPercent || discountPercent < 1 || discountPercent > 99) {
+            msgDiv.textContent = "⚠️ Discount 1 se 99 ke darmiyan hona chahiye!";
+            msgDiv.className = "msg error";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/sale`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ category, discountPercent, durationDays })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                msgDiv.textContent = "✓ " + data.message;
+                msgDiv.className = "msg success";
+                loadProducts();
+            } else {
+                msgDiv.textContent = "❌ " + (data.error || "Sale apply nahi hui");
+                msgDiv.className = "msg error";
+            }
+        } catch (error) {
+            msgDiv.textContent = "❌ Network Error!";
+            msgDiv.className = "msg error";
+        }
+    }
+
+    async function removeSale() {
+        const token = sessionStorage.getItem('adminToken');
+        const category = document.getElementById('saleCategory').value;
+        const msgDiv = document.getElementById('saleMessage');
+
+        if (!confirm("Kya aap waqai sale hatana chahte hain? Sab products apni original price par wapas aa jayenge.")) return;
+
+        try {
+            const response = await fetch(`${API_URL}/sale/remove`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ category })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                msgDiv.textContent = "✓ " + data.message;
+                msgDiv.className = "msg success";
+                loadProducts();
+            } else {
+                msgDiv.textContent = "❌ " + (data.error || "Sale remove nahi hui");
+                msgDiv.className = "msg error";
+            }
+        } catch (error) {
+            msgDiv.textContent = "❌ Network Error!";
+            msgDiv.className = "msg error";
         }
     }
 </script>
