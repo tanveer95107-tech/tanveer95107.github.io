@@ -260,7 +260,7 @@
                             <th>Customer Details</th>
                             <th>Products</th>
                             <th>Total Amount</th>
-                            <th>Status</th> <!-- NAYA -->
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
@@ -305,7 +305,7 @@
     </div>
 </div>
 
-<!-- EDIT PRODUCT MODAL (UPDATED) -->
+<!-- EDIT PRODUCT MODAL (UPDATED with Individual Discount) -->
 <div id="editProductModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="margin-bottom: 25px; color: var(--text-main); border-bottom: 1px solid var(--border); padding-bottom: 15px;">Edit Product</h3>
@@ -339,6 +339,10 @@
             <div class="form-group">
                 <label>Stock</label>
                 <input type="number" id="editStock">
+            </div>
+            <div class="form-group">
+                <label>Discount (%) - Individual</label>
+                <input type="number" id="editDiscount" placeholder="e.g., 20 (0 = no discount)" min="0" max="99">
             </div>
             <div class="form-group">
                 <label>Sizes (Comma separated)</label>
@@ -654,6 +658,14 @@
         document.getElementById('editPrice').value = p.price;
         document.getElementById('editOldPrice').value = p.oldPrice || p.price;
         document.getElementById('editStock').value = p.stock || 10;
+        
+        // NAYA: Individual discount calculate karein
+        let discountVal = 0;
+        if (p.onSale && p.salePrice > 0 && p.price > 0) {
+            discountVal = Math.round(((p.price - p.salePrice) / p.price) * 100);
+        }
+        document.getElementById('editDiscount').value = discountVal;
+        
         document.getElementById('editSizes').value = p.sizes ? p.sizes.join(', ') : '';
         document.getElementById('editColors').value = p.colors ? p.colors.join(', ') : '';
         document.getElementById('editImages').value = p.images ? p.images.join(', ') : '';
@@ -684,6 +696,18 @@
             colors: document.getElementById('editColors').value.split(',').map(c => c.trim()).filter(c => c !== ""),
             images: document.getElementById('editImages').value.split(',').map(url => url.trim()).filter(url => url !== "")
         };
+
+        // NAYA: Individual Discount handle karein
+        const discountInput = Number(document.getElementById('editDiscount').value);
+        if (discountInput > 0) {
+            updatedData.onSale = true;
+            updatedData.salePrice = Math.round(updatedData.price - (updatedData.price * discountInput / 100));
+            updatedData.saleEnds = null; // Individual sale kabhi khatam nahi hogi jab tak aap remove na karein
+        } else {
+            updatedData.onSale = false;
+            updatedData.salePrice = 0;
+            updatedData.saleEnds = null;
+        }
 
         if(!updatedData.name || !updatedData.price) {
             msgDiv.textContent = "Name and price are required!";
@@ -749,7 +773,7 @@
         }
     }
 
-    // === LOAD ORDERS (UPDATED) ===
+    // === LOAD ORDERS ===
     async function loadOrders() {
         const token = sessionStorage.getItem('adminToken');
         const tbody = document.getElementById('ordersTableBody');
